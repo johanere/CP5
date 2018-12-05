@@ -154,6 +154,8 @@ Nov 21, 2018
 
 \section{Abstract}
 \section{Introduction}
+
+For the purpose of approximating the derivatives of $u$, three methods are applied: explicit forward Euler, implicit Backward Euler, and the implicit Crank-Nicolson with a time-centered scheme.
 \section{Methods}
 
 \begin{align}
@@ -161,13 +163,25 @@ Nov 21, 2018
 u_xx=u_t
 \end{align}
 
-$L=1$
-Before approximating the derivatives, the PDE is discretized. The spacial domain, $x \in [0,1]$, is discretized over $n$ grid points, such that $x_i=i \Delta x$, where $\Delta x= \frac{1}{n+1}$
 
-of the function $u(x,t)$, using $\rho$, where $\rho$ is a dimensionless variable, so that $u=u(\rho)$ and $\rho \in [0,1] \implies \rho=\frac{x}{L}$.  Application of this dimensionless variable, together with grouping of other variables yields the following:  \newline
-$ \frac{d^2 u(\rho)}{d\rho^2} = -\frac{FL^2}{R} u(\rho)=-\lambda u(\rho)$. \newline
+Before approximating the derivatives, the problem discretized. The spacial domain , $x \in [0,L]$, $L=1$, is discretized over $n+1$ grid points, such that $x_i=i \Delta x$, $i=0,1,...,n,n+1$, where $\Delta x= \frac{1}{n+1}$. Time, $t=[0,T]$, is is expressed as $t_j=j \Delta t$, $j\geq 0$, where $\Delta t=\frac{1}{T}$. The dizcrete approximation of the function $u$ is then defined as $u(x_i,t_j)=u_{i,j}$, with boundary conditions (B.C) $u_{0,j}=0$ and $u_{n+1,j}=1$. \newline
 
-In order to numerically solve the problem, the range of $\rho$ is discretized over $N$ gridpoints, with a step length $h=\frac{\rho_{max}-\rho_{min}}{N}$, so that $\rho_i=ih$. The dizcrete approximation of the function $u$ is defined as $u(x_i)=u_i$, with boundary conditions (B.C) $u_0=u_{n+1}=0$. The second derivative of $u$ is approximated by using \eqref{eq:2nd.der.approx}.
+The solution to the problem is assumed to be $u$, and in order to dimdum, a change of variables from $u$ to $v$ is applied, where $v$ is discretized similarly to $x$: $v(x,t)=v_{i,j}$.  $u_{i,j}=v_{i,j}+x \implies v_{i,j}=u_{i,j}-x$. This changes the B.C to \begin{align*}
+v_{0,j}=v_{1,j}=0
+\end{align*}
+
+Approximating derivatives:
+Explicit forward Euler:
+\begin{align}
+u_t \approx \frac{u(x_i,t_j+\Delta t) -u(x_i,t_j)}{\Delta t} \\
+u_xx \approx \frac{u(x_i+\Delta x,t_j) -2u(x,t)+u(x-\delta x,t)}{2\delta x}\\
+\end{align}
+Which, expressed through discretized variables gives
+\begin{align}
+u_t \approx \frac{u(x+\Delta x) -2u(x,t)+u(x-\delta x,t)}{2\delta x}
+\end{align}
+
+
 \section{Algorithms}
 \label{sec:M.Algo}
 
