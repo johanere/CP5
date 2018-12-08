@@ -160,20 +160,79 @@ For the purpose of approximating the derivatives of $u$, three methods are appli
 
 \begin{align}
 \nabla^2u(x,t)=\frac{\partial u(x,t)}{\partial t} \\
-u_xx=u_t
+u_xx=u_t \label{eq:uxx=ut}
 \end{align}
 Initial conditions, boundry conditions \newline
 
-Before approximating the derivatives, the problem discretized. The spacial domain , $x \in [0,L]$, $L=1$, is discretized over $n+1$ grid points, such that $x_i=i \Delta x$, $i=0,1,...,n,n+1$, where $\Delta x= \frac{1}{n+1}$. Time, $t=[0,T]$, is is expressed as $t_j=j \Delta t$, $j\geq 0$, where $\Delta t=\frac{1}{T}$. The dizcrete approximation of the function $u$ is then defined as $u(x_i,t_j)=u_{i,j}$, with boundary conditions (B.C) $u_{0,j}=0$ and $u_{n+1,j}=1$. \newline
 
-The solution to the problem is assumed to be $u$, and in order to dimdum, a change of variables from $u$ to $v$ is applied, where $v$ is discretized similarly to $x$: $v(x,t)=v_{i,j}$.  $u_{i,j}=v_{i,j}+x \implies v_{i,j}=u_{i,j}-x_i$. This changes the B.C to \begin{align*}
+\subsection{Discretization and substitution of spatial variable}
+In order to numerically solve \eqref{eq:uxx=ut}, the problem is discretized. The spacial domain, $x \in [0,L]$, is discretized over $n+1$ grid points, such that $x_i=i \Delta x$, $i=0,1,...,n+1$, where $\Delta x= \frac{1}{n+1}$. Similarly, $t=[0,T]$, is is expressed as $t_j=j \Delta t$, $j\geq 0$. The dizcrete approximation of the function $u$ is then defined as $u(x_i,t_j)=u_{i,j}$, with boundary conditions (B.C) $u_{0,j}=0$ and $u_{n+1,j}=1$. \newline
+
+The solution to the problem is assumed to be $u$. In order to extract it's numerical approximation more easily, a change of variables from $u$ to $v$ is applied: $ v_{i,j}=u_{i,j}-x_i$. Recalling the initial conditions (I.C), $u_{i,0}=0$, for $i<L$, new I.Cs are now obtained: $v_{i,0}=u_{i,0}-x_i$, as well as the B.Cs: 
+\begin{align*}
 v_{0,j}=v_{1,j}=0
 \end{align*}
-Recalling the initial conditions, $u_{i,0}=0$, for $i<L$, $ \implies v_{i,0}=u_{i,0}-x_i$
 
-\textbf{bytt med v}
-Approximating derivatives:
-Explicit forward Euler (assignment paper/lecture notes):
+
+\subsection{Approximations methods}
+Using the discretized equation $v$, the standard approximation for derivatives is now applied, yielding \cite{HJ15}:
+\begin{align}
+v_t &\approx \frac{u(x_i,t_j+\Delta t) -u(x_i,t_j)}{\Delta t} \\
+v_{xx} &\approx \frac{u(x_i+\Delta x,t_j) -2u(x_i,t_j)+u(x_i-\Delta x,t_j)}{\Delta x^2}\\
+\end{align}
+Applying compact notation introduced in the discretization:
+\begin{align}
+u_t \approx \frac{u_{i,j+1} -u_{i,j}}{\Delta t} \\
+u_{xx} \approx \frac{u_{i+1,j} -2u_{i,j}+u_{i-1,j}}{\Delta x^2}\\
+\end{align}
+Where $u_t$ has local truncation error (LTE) $O(\Delta t)$ and  $u_xx$ has $O(\Delta x^2)$. \newline
+
+Setting $u_t=u_{xx}$, defining $\alpha = \Delta t/\Delta x^2$, and solving for $v_{i,j+1}$ yields what is known as the explicit scheme (ref lec notes): 
+\begin{equation}
+v_{i,j+1}=\alpha v_{i-1,j}+(1-2 \alpha)v_{i,j}+\alpha v_{i+1,j}
+\end{equation}
+
+
+
+The terms $v_0$ and $v_{n+1}$ are now excluded, as they are the B.C's, and thereby part of the solution. 
+\begin{equation} V_j=
+\begin{bmatrix}
+v_{1,i} \\ v_{2,i} \\ ...\\ v_{n,i}
+\end{bmatrix}
+\end{equation}
+
+
+Which corresponds to the following matrix product:
+\begin{equation}
+V_{j+1}=\mathbf{A}V_j
+\end{equation}
+
+In which $\textbf{A}=  \begin{bmatrix}
+                           1-2\alpha & \alpha & 0 &\dots   & \dots &0 \\
+                           \alpha & 1-2\alpha  &  \alpha &0 &\dots &\dots \\
+                           & \dots   & \dots &\dots   &\dots & \dots \\
+                      
+                           0&\dots    &  & 0  &\alpha & 1-2\alpha \\
+              			\end{bmatrix}$ \newline
+              			
+\textbf{Skriv ut ligningene} \newline
+
+$V_{j+1}=\mathbf{A}V_h=\mathbf{A}\mathbf{A}V_{j-1}=...=\mathbf{A}^{j+1}V_0$ \newline
+
+
+\textbf{implicit backward euler:}
+Similarly, implicit backward euler:
+\begin{align}
+u_t \approx \frac{u_{i,j} -u_{i,j-1}}{\Delta t} \\
+u_{xx} \approx \frac{u_{i+1,j} -2u_{i,j}+u_{i-1,j}}{\Delta x^2}\\
+\end{align}
+
+
+
+
+\subsubsection{Approximations methods and their matrix representations}
+The second derivatives
+\textbf{Explicit forward Euler} (assignment paper/lecture notes):
 \begin{align}
 u_t \approx \frac{u(x_i,t_j+\Delta t) -u(x_i,t_j)}{\Delta t} \\
 u_{xx} \approx \frac{u(x_i+\Delta x,t_j) -2u(x_i,t_j)+u(x_i-\Delta x,t_j)}{\Delta x^2}\\
@@ -189,7 +248,10 @@ Setting $u_t=u_{xx}$, defining $\alpha = \Delta t/\Delta x^2$, and solving for $
 \begin{equation}
 v_{i,j+1}=\alpha v_{i-1,j}+(1-2 \alpha)v_{i,j}+\alpha v_{i+1,j}
 \end{equation}
-As $v(0,j)=v(n+1,j)=0$ for all $j$, the time dependent part of the solution is now expressed as:
+
+
+
+The terms $v_0$ and $v_{n+1}$ are now excluded, as they are the B.C's, and thereby part of the solution. 
 \begin{equation} V_j=
 \begin{bmatrix}
 v_{1,i} \\ v_{2,i} \\ ...\\ v_{n,i}
@@ -197,16 +259,174 @@ v_{1,i} \\ v_{2,i} \\ ...\\ v_{n,i}
 \end{equation}
 
 
-Similarly, implicit backward euler:
-\begin{align}
-u_t \approx \frac{u_{i,j} -u_{i,j-1}}{\Delta t} \\
-u_{xx} \approx \frac{u_{i+1,j} -2u_{i,j}+u_{i-1,j}}{\Delta x^2}\\
-\end{align}
+Which corresponds to the following matrix product:
+\begin{equation}
+V_{j+1}=\mathbf{A}V_j
+\end{equation}
 
+In which $\textbf{A}=  \begin{bmatrix}
+                           1-2\alpha & \alpha & 0 &\dots   & \dots &0 \\
+                           \alpha & 1-2\alpha  &  \alpha &0 &\dots &\dots \\
+                           & \dots   & \dots &\dots   &\dots & \dots \\
+                      
+                           0&\dots    &  & 0  &\alpha & 1-2\alpha \\
+              			\end{bmatrix}$ \newline
+              			
+\textbf{Skriv ut ligningene} \newline
+
+$V_{j+1}=\mathbf{A}V_h=\mathbf{A}\mathbf{A}V_{j-1}=...=\mathbf{A}^{j+1}V_0$ \newline
+
+For a specific number of steps, $n$, \eqref{eq:2nd.der.approx} yields a set of $n$ linear equations; \par 
+
+\begin{align*}
+   &-\frac{v_{2}+v_{0}-2v_1}{h^2} = f_1& \\
+   &-\frac{v_{3}+v_{1}-2v_2}{h^2} = f_2 \\
+   & \dots  \dots& \\
+   & -\frac{v_{i+1}+v_{i-1}-2v_i}{h^2} = f_i& \\
+   & \dots  \dots& \\
+   & -\frac{v_{n+1}+v_{n-1}-2v_n}{h^2} = f_n& \\
+\end{align*}
+
+The equations above may be represented by matrices. The terms $v_0$ and $v_{n+1}$, in the the first and n'th equations, are excluded, as they are the B.C's, and thereby part of the solution. 
+\[
+    \frac{1}{h^2}\begin{bmatrix}
+   &-v_{2}-v_{0}+2v_1 \\
+   &-v_{3}-v_{1}+2v_2\\
+   & \dots  \dots& \\
+   & -v_{i+1}-v_{i-1}+2v_i \\
+   & \dots  \dots& \\
+   & -v_{n+1}-v_{n-1}+2v_n\\
+                      \end{bmatrix}
+  =\begin{bmatrix}
+                           f_1\\
+                           f_2\\
+                           \dots \\
+                           f_i \\
+                          \dots \\
+                           f_n\\
+                      \end{bmatrix}.
+\]
+
+Which corresponds to the following matrix product
+
+\[
+    \mathbf{A} \mathbf{v}= \begin{bmatrix}
+                           2& -1& 0 &\dots   & \dots &0 \\
+                           -1 & 2 & -1 &0 &\dots &\dots \\
+                           0&-1 &2 & -1 & 0 & \dots \\
+                           & \dots   & \dots &\dots   &\dots & \dots \\
+                           0&\dots   &  &-1 &2& -1 \\
+                           0&\dots    &  & 0  &-1 & 2 \\
+              			\end{bmatrix}\begin{bmatrix}
+                           v_1\\
+                           v_2\\
+                           \dots \\
+                          \dots  \\
+                          \dots \\
+                           v_n\\
+                      \end{bmatrix}
+  =\begin{bmatrix}
+                           \tilde{b}_1\\
+                           \tilde{b}_2\\
+                           \dots \\
+                           \dots \\
+                          \dots \\
+                           \tilde{b}_n\\
+                      \end{bmatrix}.=\mathbf{\tilde{b}}
+\]
+
+Where \textbf{A} contains the coefficients of the left hand side of the set of equations, \textbf{v} holds the unknown entities (in this case, the value of the  function), and $\mathbf{\tilde{b}}$ holds the solutions $b_i=h^2f_i$. 
+\subsubsection{Reducing complexity of equations}
+In general, a set of linear equations may be simplified by Gaussian Elimination, which corresponds to bringing the augmented matrix representing the coefficients from the set of equations and the vector holding the solutions (right hand side) side to row echelon form. \par   
+In the specific case described above the non-diagonal elements are identical, so the the matrix $\mathbf{A}$ is a tridiagonal Toeplitz matrix. In order to produce a more general numerical solver, the Gaussian Elimination below and the algorithms based upon the result, will be founded upon an unspecified $n \times n$ tridiagonal $\mathbf{A}$ and a $1 \times n$ column vector, \textbf{b}.
+
+\[
+   [\mathbf{A} \mathbf{b} ]= \mathbf{B} = \begin{bmatrix}
+                           d_1& c_1 & 0 &\dots   & \dots &\dots  &b_1\\
+                           a_1 & d_2 & c_2 &\dots &\dots &\dots  &b_2\\
+                           & a_2 & d_3 & c_3 & \dots   &\dots &\dots  \\
+                           & \dots   & \dots &\dots   &\dots &\dots & \dots\\
+                           &   &  &a_{n-2}  &d_{n-1}& c_{n-1}  & \dots\\
+                           &    &  &   &a_{n-1} & d_n  &b_n\\
+                      \end{bmatrix}
+                      \thicksim \]
+\break
+\[
+    \mathbf{\tilde{B}} = \begin{bmatrix}
+                           \tilde{d_1}& c_1 & 0 &\dots   & \dots &\dots  &\tilde{b_1}\\
+                           0 & \tilde{d_2} & c_2 &\dots &\dots &\dots  &\tilde{b_2}\\
+                           & 0 & d_3 & c_3 & \dots & \dots &\dots    \\
+                           & \dots   & \dots &\dots   &\dots  &\dots & \dots\\
+                           &   &  &0  &\tilde{d_{n-1}}& c_{n-1}  & \dots\\
+                           &    &  &   &0 & \tilde{d_n}  &\tilde{b_n}\\
+                      \end{bmatrix}=[\mathbf{\tilde{A}} \mathbf{b}]
+\]
+                      
+Where \begin{equation}
+\tilde{d_i} =
+  \begin{cases}
+                                  d_i-\frac{c_{i-1} a_{i-1}}{\tilde{d}_{i-1}}, , & \text{for i=2,3,...,n}\\
+                                   d_i ,  & \text{for i=1} \\
+
+  \end{cases}
+\label{eq:tilded_i}
+\end{equation}
+\begin{equation}
+\tilde{b_i}=
+  \begin{cases}
+                                  b_i-\frac{\tilde{b}_{i-1} a_{i-1}}{\tilde{d}_{i-1}}, , & \text{for i=2,3,...,n}\\
+                                   b_i ,  & \text{for i=1} \\
+
+  \end{cases}
+\label{eq:b_i}
+\end{equation}
+              
+In order to derive an algorithm from the equation coefficients, a $1\times n$ vector, \textbf{v}, holding the variables in the equations, is introduced. Similar to before, but in this case using the row echelon form of the general tridiagonal matrix and general vectors, the matrix product representing the (general) equations can be written as;
+
+\[
+    \mathbf{A} = \begin{bmatrix}
+                      \tilde{d_1}& c_1 & 0 &\dots   & \dots &\dots  \\
+                           0 & \tilde{d_2} & c_2 &\dots &\dots &\dots \\
+                           & 0 & d_3 & c_3 & \dots & \dots     \\
+                           & \dots   & \dots &\dots   &\dots  &\dots  \\
+                           &   &  &0  &\tilde{d_{n-1}}& c_{n-1}  \\
+                           &    &  &   &0 & \tilde{d_n}  \\
+                      \end{bmatrix}\begin{bmatrix}
+                           v_1\\
+                           v_2\\
+                           \dots \\
+                          \dots  \\
+                          \dots \\
+                           v_n\\
+                      \end{bmatrix}
+  =\begin{bmatrix}
+                           \tilde{b}_1\\
+                           \tilde{b}_2\\
+                           \dots \\
+                           \dots \\
+                          \dots \\
+                           \tilde{b}_n\\
+                      \end{bmatrix}.
+                      \label{finalmatrixproduct}
+\]
+The matrix product directly above yields the relation $v_n \tilde{d}_n=\tilde{b}_n$. Since $\tilde{d}_{n-1} v_{n-1} + c_{n_1} v_n = \tilde{b}_{n-1}$ and so on, $v_i$ may be backwards substituted:\par 
+
+\begin{equation}
+   v_i =
+  \begin{cases}
+                                  \frac{\tilde{b}_n}{\tilde{d}_n} ,  & \text{for i=n}\\
+                \frac{\tilde{b}_i-c_{i-1} v_{i-1}}{\tilde{d}_i}, , & \text{for i=1,2,...,n-1}                    \\
+
+  \end{cases}
+\label{eq:v_i}
+\end{equation}
 
 \section{Algorithms}
+\cite{armadillo}
 \label{sec:M.Algo}
 
+\bibliographystyle{plain}
+\bibliography{ref}
 
 \end{document}
 

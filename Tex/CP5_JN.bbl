@@ -1,0 +1,12 @@
+\begin{thebibliography}{1}
+
+\bibitem{HJ15}
+Morten Hjorth-Jensen.
+\newblock Lecture notes fall 2015: Lecture notes fall 2015, Aug 2015.
+
+\bibitem{armadillo}
+Conrad Sanderson and Ryan Curtin.
+\newblock Armadillo: a template-based c++ library for linear algebra.
+\newblock \url{http://arma.sourceforge.net/docs.html#part_classes}, 2016.
+
+\end{thebibliography}
