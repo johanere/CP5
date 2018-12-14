@@ -30,17 +30,15 @@ int main()
   m = new double;
   for (int i = 2; i <= n; i++)
   {
-    *m=a[i]/d[i-1];
-    cout<<*m<<endl;
-    d[i] -= *m*c[i-1];
-    v[i] -= *m*v[i-1];
+    *m=a(i)/d(i-1);
+    d(i) -= *m*c(i-1);
+    v(i) -= *m*v(i-1);
   }
   delete m;
 
-
   // Backward subsitution
-  v[n-1]=b[n-1]/d[n-1];
+  v[n]=b[n]/d[n];
   for (int i = n-2; i > 0; i--)
   {
-    v[i] = (b[i]-c[i-1]*v[i+1])/d[i];*/
+    v(i)=(b(i)-c(i-1)*v(i-1))/d(i);
 }

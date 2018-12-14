@@ -1,30 +1,35 @@
 #include <iostream>
 #include <fstream>
 #include <iomanip>
-#include <cmath>
 #include <string>
+
+#include <cmath>
 #include "armadillo"
-using namespace std;
-using namespace arma;
 
 #define PI 3.14159265
+
+using namespace std;
+using namespace arma;
+//declarations
+void forward_step(double a, double d, vec& v, vec& vPrev, int n);
+void forward_euler(double alpha, vec& v, int n, double T, double dt);
+double analytical_solution(double x, double t);
+void backward_euler(double alpha, vec& v, int n, double T, double dt);
+void tridiag(double alpha, vec& v, int n);
+
 
 // output file
 ofstream ofile;
 
-//header
-void forward_step(double a, double d, vec& v, vec& vPrev, int n);
-void forward_euler(double alpha, vec& v, int n, double T, double dt);
-double analytical_solution(double x, double t);
-///
+
 
 int main()
 {
   //read from CL
-  int method=1;                 // approximation method, 1=forward euler
-  double dx=(double) 1.0/100;               // stepsize of x
+  int method=2;                 // approximation method, 1=forward euler
+  double dx=(double) 1.0/10;               // stepsize of x
   double T= 0.1;                  // total time
-  string fileout = "dingdong";
+  string fileout = "BWtest";
 
 
   int n=(1/dx)-1.0;             // number of gridpoints between x=0 and x=l
@@ -52,13 +57,18 @@ int main()
     forward_euler(alpha,v,n,T,dt);
     ofile << setw(15) << setprecision(8) <<"Method: Forward Euler" <<endl;
   }
-
+  if (method==2)              // Solving using Backward Euler
+  {
+    backward_euler(alpha,v,n,T,dt);
+    ofile << setw(15) << setprecision(8) <<"Method: Backward Euler" <<endl;
+  }
 
   vec exact = zeros<vec>(n+2);      // placeholder analytical solution to PDE
   for(int j=0; j<=n+1; j++)
   {
     exact[j]=analytical_solution(x[j],T);
   }
+
 
 
   u=v+x;  // extracting solution from v
@@ -81,8 +91,6 @@ int main()
   ofile.close();
 } //end of main
 
-
-
 void forward_step(double a, double d, vec& v, vec& vPrev, int n)
 // takes a=alpha, d=(1+2 alpha), v to fill with new solutions based on previous solutions vPrev
 {
@@ -96,6 +104,15 @@ void forward_step(double a, double d, vec& v, vec& vPrev, int n)
 
 
 
+void tridiag(double alpha, vec& v, int n) //Tridiagonal toeplitz solver
+{    //initialzing vectors and assigning values to known entities
+  for (int i=1;i<=n;i++)
+  {
+    v(i)=3;
+  }
+}
+
+
 void forward_euler(double alpha, vec& v, int n, double T, double dt) //
 {
   double a = alpha;
@@ -104,21 +121,21 @@ void forward_euler(double alpha, vec& v, int n, double T, double dt) //
   for (double t=0; t <=T; t+=dt) //iterating over timesteps. As time is updated at the end of a loop, time prints in loop must be time+delta_t!
   {
     vec vPrev = v; //set previous solution to current, and iterate current
-    forward_step(a,d,v,vPrev,n); //Solving tridiagonal matrix product: Av=v_new
+    forward_step(a,d,v,vPrev,n); //Solving tridiagonal matrix product: Av(t-1)=vt(1)
   }
 } //end of forward_euler function
 
-void tridiag(double alpha, vec& v, int n, double T, double dt) //
+
+void backward_euler(double alpha, vec& v, int n, double T, double dt) //
 {
-  double a = alpha;
-  double d = 1-2*alpha;
-  vec vPrev = zeros<vec>(n+2);
   for (double t=0; t <=T; t+=dt) //iterating over timesteps. As time is updated at the end of a loop, time prints in loop must be time+delta_t!
+  //for (double t=0; t <=2; t+=1)
   {
-    vec vPrev = v; //set previous solution to current, and iterate current
-    forward_step(a,d,v,vPrev,n); //Solving tridiagonal matrix product: Av=v_new
+    tridiag(alpha,v,n); //Solving tridiagonal matrix product: Av_(t)=v(t-1)
   }
 } //end of forward_euler function
+
+
 
 double analytical_solution(double x, double t)
 {
