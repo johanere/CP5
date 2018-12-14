@@ -492,7 +492,7 @@ Recalling that $\Delta x=\frac{1}{n+1} \implies n=\frac{1}{\Delta x}-1$. Thus, u
 \subitem - Set $dx$ at $T$
 \subitem - Define steady state $\tilde{u_i}$,  ($\tilde{u}_0=\tilde{u}_{n+1}=0$)
 \subitem - Calculate $n=1/dx -1, \quad dt=0.5 \cdot dx^2$
-\subitem - Calculate $\alpha=dt/dx, \quad \beta=1-2\alpha$
+\subitem - Calculate $\alpha=dt/dx^2, \quad \beta=1-2\alpha$
 \subitem - Initiate and set:
 \subitem 	$x_i= i \cdot dx \quad  v_i=-\tilde{u_i}, \quad i=0,1,2,...,n+1$
 \subitem - Initiate: previous solution vectorized $u$, time $t=0$
@@ -512,7 +512,7 @@ Recalling that $\Delta x=\frac{1}{n+1} \implies n=\frac{1}{\Delta x}-1$. Thus, u
 \subitem - Set $dx$ at $T$
 \subitem - Define steady state $\tilde{u_i}$,  ($\tilde{u}_0=\tilde{u}_{n+1}=0$)
 \subitem - Calculate $n=1/dx -1, \quad dt=0.5 \cdot dx^2$
-\subitem - Calculate $\alpha=dt/dx, \quad \beta=1-2\alpha$
+\subitem - Calculate $\alpha=dt/dx^2, \quad \beta=1-2\alpha$
 \subitem - Initiate and set :
 \subitem $x_i= i \cdot dx \quad  v_i=-\tilde{u_i}, \quad i=0,1,2,...,n+1$
 \subitem - Initiate: 
@@ -535,7 +535,7 @@ Recalling that $\Delta x=\frac{1}{n+1} \implies n=\frac{1}{\Delta x}-1$. Thus, u
 \subitem - Set $dx$ at $T$
 \subitem - Define steady state $\tilde{u_i}$,  ($\tilde{u}_0=\tilde{u}_{n+1}=0$)
 \subitem - Calculate $n=1/dx -1, \quad dt=0.5 \cdot dx^2$
-\subitem - Calculate $\alpha=dt/dx, \quad \beta=2-2\alpha$
+\subitem - Calculate $\alpha=dt/dx^2, \quad \beta=2-2\alpha$
 \subitem - Initiate and set:
 \subitem 	$x_i= i \cdot dx \quad  v_i=-\tilde{u_i}, \quad i=0,1,2,...,n+1$
 \subitem - Initiate: place-holder $u$,  vectorized $d$, time $t=0$
@@ -557,12 +557,64 @@ Recalling that $\Delta x=\frac{1}{n+1} \implies n=\frac{1}{\Delta x}-1$. Thus, u
 
 \subsection{Algorithm implementation}
 \label{M.AlgoImpl}	
-The three algorithms are now implemented into a single program through code written in \textit{C++} with the armadillo library \cite{armadillo}. This is done by splitting the code into two files, one containing function calls that solve a specific problem - the main file, and one containing functions   based on the previously derived algorithms - the methods file. Execution of the compiled program takes the following arguments: "method", $\Delta x$, and $T$ as arguments. The "method" argument, either 1,2,3, or 4, corresponds to: the explicit scheme, the implicit scheme, the CN scheme, and LU decomposition using the armadillo library. In the main file, the value of the "method" argument is evaluated, and the corresponding algorithm executed by calling a method specific time iterating function. In each time step, the solution is moved one time step ($\Delta t$) forward. In the case of the CN scheme, this is achieved by sequentially calling the functions for the explicit and implicit schemes with adjusted parameters, such that the flow of operations fit the CN algorithm.
+The three algorithms are now implemented into a single program through code written in \textit{C++} with the armadillo library \cite{armadillo}, using the scaled rod scenario previously introduced. This is done by splitting the code into two files, one containing function calls that solve a specific problem - the main file, and one containing functions   based on the previously derived algorithms - the methods file. Execution of the compiled program takes the following arguments: "method", $\Delta x$, and $T$ as arguments. The "method" argument, either 1,2,3, or 4, corresponds to: the explicit scheme, the implicit scheme, the CN scheme, and LU decomposition using the armadillo library. In the main file, the value of the "method" argument is evaluated, and the corresponding algorithm executed by calling a method specific time iterating function. In each time step, the solution is moved one time step ($\Delta t$) forward. In the case of the CN scheme, this is achieved by sequentially calling the functions for the explicit and implicit schemes with adjusted parameters, such that the flow of operations fit the CN algorithm.
 
 In order to test the integrity of the algorithms in the program implementation, the compiled program is run with $\Delta x=0.1$ and $\Delta x=0.01$, for two values of $T$, $T=0.05$ and $T=0.3$ - chosen through trial and error as solutions that are, in the $T=0.05$ case, smooth but significantly curved, and in the $T=0.3$ case, almost linear. The produced results for the explicit forward Euler method, the implicit backward Euler method, and the Crank-Nicolson method are then plotted along with the CFS of the problem (analytically derived in the \hyperref[M.CFS1d]{section on CFS to the 1D HQ}). If integrity of the algorithms have been preserved throughout implementation, this is expected to produce solutions visually similar to the CFS - since $\Delta t$ is calculated based on the stability criteria of the explicit Euler method. \newline
 
 Following the initial visual confirmation of algorithm integrity, the relative error compared to the CFS is examined for all three schemes using the same parameters as in the initial testing. Here, the Crank-Nicolson scheme is, on account of it's LTE beeing $O(\Delta t^2)$ and $O((\Delta x)^2)$, expected to yield results closest to the CFS. Additionally, the relative error is expected to decrease as $T$ increases, since this brings the solution closer to the equilibrium state in which all (stable) methods should converge. Lastly, considering that all methods have LTE $\sim O((\Delta x)^2)$ and $\sim O(\Delta t)$ or better, the relative error is expected to decrease with $\Delta x$, and should be within the magnitudes $ 10^{-2}$ to $\cdot 10^{-3}$  in the $\Delta x=0.1$ case, and $10^{-4}$ to $10^{-5}$ in the $\Delta x=0.01$.
 
+\subsection{Modifying program to solve the 2D heat equation}
+In order to examine the consequences of numerically solving the heat equation in two spatial dimensions, the explicit forward Euler algorithm is extended to solve a PDE of the type:
+\begin{align}
+PDE:& \quad \frac{\partial u}{\partial t}=\left(\frac{\partial^2 u}{\partial x^2}+\frac{\partial^2 u}{\partial y^2}\right) \label{eq:2DPDE}\\
+ICs:& \quad u(x,y,0)=f(x) \label{eq:2DIC} \\
+BCs:& \quad u(x,0,t)=0, \quad u(x,1,t)=0, \label{eq:2DBC1} \quad &0<x<1,t\geq 0\\
+BCS:& \quad u(0,y,t)=0,\quad u(1,y,t)=0 \quad &0<y<1, t\geq 0 \label{eq:2DBC2}
+\end{align}
+Which signifies a scaled 2 dimensional PDE. As with the solutions, both numerical and analytical, of the 1D heat equation, a variable substitution in the case of inhomogeneous boundary conditions should be carried out to bring the BCs constantly equal zero. For simplicity sake, the problem is assumed to have homogeneous BCs constantly equals zero - anything else would simply change $f(x)$. Because of this, the proposed diffusion equation could be viewed as a cooling process, in which a rectangular body is equilibrating with colder surroundings. Alternatively, assuming that a change of variables has already taken place, the PDE could represent a rectangle being heated by a thermal bath connected to for example one side, or point, or a variety of other scenarios, depending on the choice of $f(x)$.  \newline
+
+A similar discretization process as previously described is now applied to \eqref{eq:2DPDE}, with $h=\frac{1}{n+1}$, and $x=ih$, $y=ih$, for $i=0,1,2,...,n+1$, and $t=l \Delta t$. Using approximations pertaining to the explicit Forward Euler scheme, and letting $u_{i,j}^l$ denote $u(x_i,y_j,t_l)$, the following first order forward approximation of $u_t$ is obtained \cite{HJ15}: 
+\begin{equation}
+u_t \approx \frac{u_{i,j}^{l+1}-u_{i,j}^l}{\Delta t}
+\end{equation}
+Analogous to the 1D case, temporal second order approximations to $u_{xx}$ and $u_{yy}$ yield \cite{HJ15}:
+\begin{align}
+u_{xx}=\frac{u_{i+1,j}^l-2u_{i,j}^l+u_{i-1,j}^l}{h^2} \\
+u_{yy}=\frac{u_{i,j+1}^l-2u_{i,j}^l+u_{i,j-1}^l}{h^2} \\
+\end{align}
+Substituting the approximations into \eqref{eq:2DPDE}:
+\begin{equation}
+\frac{u_{i,j}^{l+1}-u_{i,j}^l}{\Delta t}=\left(\frac{u_{i+1,j}^l-2u_{i,j}^l+u_{i-1,j}^l}{h^2} +\frac{u_{i,j+1}^l-2u_{i,j}^l+u_{i,j-1}^l}{h^2}\right)
+\end{equation}
+Defining $\alpha=\Delta t/h^2$ and solving for $u_{i,j}^{l+1}$, the approximated solution at $t=t_l+\Delta t$:
+\begin{equation}
+u_{i,j}^{l+1}=u_{i,j}^{l}+\alpha\left(u_{i+1,j}^{l}+u_{i-1,j}^{l}+u_{i,j+1}^{l}+u_{i,j-1}^{l}-4u_{i,j}^{l}\right] \label{eq:2dFW}
+\end{equation}
+Using the same train of thought applied in finding the 1D explicit forward Euler algorithm, with the solution  at time $t=l \Delta t$, $u(x_i,t_i)$ as a matrix, the 2D explicit forward Euler algorithm is expressed directly based on \eqref{eq:2dFW}. In the algorithm, no special concern is given to  solving for $v(0,j),v(1,j),v(i,o),v(i,1)$, as the adjacent solution values on the boundary are set to $0$ through $f(x_i,y_i)$. 
+
+\begin{center}\fbox{\parbox{\textwidth}{{\textbf{HQ2D: Explicit forward Euler algorithm}}
+\begin{enumerate}
+\item Initialize PDE
+\subitem - Set $h$ at $T$
+\subitem - Define ICs $f(x_i,y_i)$ 
+\subitem - Set $f(x_i,y_i)=0$ for $i=0,1$ and $j=0,1$
+\subitem - Calculate $n=1/n -1, \quad dt=0.5 \cdot h^2$
+\subitem - Calculate $\alpha=dt/h^2, \quad \beta=1-2\alpha$
+\subitem - Initiate and set:
+\subitem 	$x_i= i  h, i=0,1,2,...,n+1, \quad  y_{j}= j  h, \quad j=0,1,2,...,n+1$
+\subitem - Initiate matrix $v$, with double for loop over $i=0,..,n+1$, $j=0,..,n+1$
+\subitem 	$v_{i,j}=f(x_i,y_i)$
+\subitem - Initiate: previous solution as matrix $u$, time $t=0$
+\item Advance solution in time
+\subitem - Set $u=v$ 
+\subitem - Double for loop over $i=1,2,..,n$ and $j=1,2,..n$:
+\subitem  $v_{i,j}=u_{i,j}+\alpha\left(u_{i+1,j}+u_{i-1,j}+u_{i,j+1}+u_{i,j-1}-4u_{i,j} \right)$
+\subitem - $t=t+dt$
+\item If $t<T$, repeat step 2.
+\item Else end simulation.  
+\end{enumerate}}}\end{center}
+Based on this algorithm, a separate program is developed - following the same pattern as the original. This program compares the solution from the algorithm implementation with the CFS, derived under 
+\hyperref[M.CFS2D]{section on CFS to the 1D HQ}).
 
 \subsection{Closed form solution to the 1D heat equation}
 \label{M.CFS1d}
@@ -660,8 +712,8 @@ u(x,t)=&u_E+v(x,t) \\
 
 
 
-\subsection{solution 2d.}
-$D=\{(x,y):0\leq x,y \leq 1\}$, \newline
+\subsection{Closed form solution to the 2D heat equation}
+\label{M.CFS2D}
 \textbf{step 1: Find equilibrium solution}
 \begin{align}
 u_t=\nabla^2 u, \text{   } (x,y)\in D \\
