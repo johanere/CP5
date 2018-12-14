@@ -295,11 +295,11 @@ Being a first order approximation, the local trunction error (LTE) of this appro
 \begin{align}
 u_{xx} \approx \frac{u_{i+1,j} -2u_{i,j}+u_{i-1,j}}{\Delta x^2} \label{FWD1d.uxx}
 \end{align}
-In contract to the approximation of $u_t$, $u_{xx}$ is a second order approximation which yields an LTE of $O(\Delta x^2)$. Substituting \eqref{FWD1d.ut} and \eqref{FWD1d.uxx} into \eqref{eq:Approxim.heateq}:
+In contract to the approximation of $u_t$, $u_{xx}$ is a second order approximation which yields an LTE of $O((\Delta x)^2)$. Substituting \eqref{FWD1d.ut} and \eqref{FWD1d.uxx} into \eqref{eq:Approxim.heateq}:
 \begin{align*}
-\frac{u_{i+1,j} -2u_{i,j}+u_{i-1,j}}{\Delta x^2}=\frac{u_{i,j+1}- u_{i,j}}{\Delta t} 
+\frac{u_{i+1,j} -2u_{i,j}+u_{i-1,j}}{(\Delta x)^2}=\frac{u_{i,j+1}- u_{i,j}}{\Delta t} 
 \end{align*}
-Defining $\alpha=\Delta t/\Delta x^2$ and solving for $u(x,t+\Delta t)=u_{i,j+1}$:
+Defining $\alpha=\Delta t/(\Delta x)^2$ and solving for $u(x,t+\Delta t)=u_{i,j+1}$:
 \begin{align}
 u_{i,j+1}= \alpha u_{i-1,j}+(1-\alpha)u_{i,j}+\alpha u_{i,j} \label{eq:Approximation.FWDnew}
 \end{align}
@@ -396,7 +396,7 @@ Which is the starting point for the explicit backward Euler algorithm presented 
 \textbf{The Crank-Nicolson scheme} (CN) combines the explicit and implicit methods described above through  the paramter $\theta$. The $\theta$-rule leads to the equation \cite[p.310]{HJ15}: 
 
 \begin{equation}
-\frac{\theta}{\Delta x^2}(u_{i-1,j}-2u_{i,j}+u_{i,j})+\frac{1-\theta}{\Delta x}(u_{i+1,j-1}-2u_{i,j-1}+u_{i-1,j-1})=\frac{1}{\Delta t}(u_{i,j}-u_{i,j-1})
+\frac{\theta}{(\Delta x)^2}(u_{i-1,j}-2u_{i,j}+u_{i,j})+\frac{1-\theta}{\Delta x}(u_{i+1,j-1}-2u_{i,j-1}+u_{i-1,j-1})=\frac{1}{\Delta t}(u_{i,j}-u_{i,j-1})
 \label{eq:thetarule}
 \end{equation}
 
@@ -405,7 +405,7 @@ $\theta=0$ leads to the already described explicit forward Euler scheme, while $
 -\alpha u_{i-1,j}+(2+2\alpha)u_{i,j} - \alpha u_{i+1,j}=\alpha u_{i-1,j-1}+(2-2\alpha)u_{i,j-1}+\alpha u_{i+1,j-1}
 \label{eq:CN}
 \end{equation}
-Where $\alpha$ is as previously defined. This approximation is based on combining the time derivatives from both the explicit and the implicit scheme, meaning that the time derivative becomes a centred Taylor expansion with LTE $O(\Delta t^2)$. As the explicit and implicit scheme both use the same approximation to $u_{xx}$, the LTE for the spatial approximation remains $O(\Delta x^2)$. \newline
+Where $\alpha$ is as previously defined. This approximation is based on combining the time derivatives from both the explicit and the implicit scheme, meaning that the time derivative becomes a centred Taylor expansion with LTE $O(\Delta t^2)$. As the explicit and implicit scheme both use the same approximation to $u_{xx}$, the LTE for the spatial approximation remains $O((\Delta x)^2)$. \newline
 The next step, yet again, requires BCs: $a=b=0$.  In the case of inhomogeneous Dirichlet BCs, apply the procedure for change of variables described under in the explicit scheme. With $a=b=0$,  \eqref{eq:CN} yields the matrix product:
 \begin{equation}
 (2 \mathbf{I}+\alpha \mathbf{C})V_j= (2\mathbf{I}-\alpha \mathbf{C})V_{j-1}
@@ -433,7 +433,7 @@ Which leads to the following sequential matrix products, for solving the Crank-N
 (2 \mathbf{I}+\alpha \mathbf{C}) V_j=(\mathbf{B}+\mathbf{I}) V_j=\hat{V}_{j-1}
 \end{align}
 \subsection{Approximation errors and stability}
-As mentioned in the previous section outlining the approximation methods. The forward and backward first order time derivative approximations both have a local truncation errors $\sim O(\Delta t)$. Similarly, the second order spatial derivative approximation yields and LTE $\sim O(\Delta x^2$. As both the explicit forward Euler scheme and the implicit backward Euler scheme use these approximation, they both have LTE $O(\Delta t)$ and $O(\Delta x^2)$. As mentioned, the Crank-Nicolson scheme however uses a time centred spatial derivative approximation with LTE $\sim O(\Delta t^2)$, derived in the lecture notes from in course Computational Physics at the University of Oslo \citep[p.311]{HJ15}. Thus, the CN scheme as LTE $O(\Delta t^2)$ and $O(\Delta x^2)$. \newline
+As mentioned in the previous section outlining the approximation methods. The forward and backward first order time derivative approximations both have a local truncation errors $\sim O(\Delta t)$. Similarly, the second order spatial derivative approximation yields and LTE $\sim O((\Delta x)^2$. As both the explicit forward Euler scheme and the implicit backward Euler scheme use these approximation, they both have LTE $O(\Delta t)$ and $O((\Delta x)^2)$. As mentioned, the Crank-Nicolson scheme however uses a time centred spatial derivative approximation with LTE $\sim O(\Delta t^2)$, derived in the lecture notes from in course Computational Physics at the University of Oslo \citep[p.311]{HJ15}. Thus, the CN scheme as LTE $O(\Delta t^2)$ and $O((\Delta x)^2)$. \newline
 
 In terms of stability, a general method, called Von Neumann's Stability Analysis - described in detail in \citep[p.132-134]{compPDE}, may be applied in order to study the stability of both numerical and analytical solutions. Here, such analysis is only applied to problems analogous to the scaled rod problem. As will be described in more detail later, solutions to the heat equation in one dimension with homogeneous BC are on the form 
 \begin{equation}
@@ -450,28 +450,37 @@ F_\Delta=\{(a_n)^j e^{in\pi x_i}\}_{n=1}^{n=\infty}
 Where $(a_n)^j$ is referred to as the amplification factor. Drawing on this, the stability of the three methods used in this project may be examined. Recalling the approximations in the explicit Euler scheme:
 \begin{align*}
 \eqref{FWD1d.ut} =& \eqref{FWD1d.uxx} \\
-\frac{u_{i,j+1}- u_{i,j}}{\Delta t}=&\frac{u_{i+1,j} -2u_{i,j}+u_{i-1,j}}{\Delta x^2} 
+\frac{u_{i,j+1}- u_{i,j}}{\Delta t}=&\frac{u_{i+1,j} -2u_{i,j}+u_{i-1,j}}{(\Delta x)^2} 
 \end{align*}
 Substituting $u_{i,j}$ with a particular solution from $F_{\Delta x}$:
 \begin{align*}
-\frac{(a_n)^{j+1} e^{in\pi x_i}- (a_n)^j e^{in\pi x_i}}{\Delta t}=&\frac{(a_n)^j e^{in\pi x_{i+1}} -2(a_n)^j e^{in\pi x_i}+(a_n)^j e^{in\pi x_{i-1}}}{\Delta x^2} 
+\frac{(a_n)^{j+1} e^{in\pi x_i}- (a_n)^j e^{in\pi x_i}}{\Delta t}=&\frac{(a_n)^j e^{in\pi x_{i+1}} -2(a_n)^j e^{in\pi x_i}+(a_n)^j e^{in\pi x_{i-1}}}{(\Delta x)^2} 
 \end{align*}
 or 
 \begin{align*}
-\frac{(a_n)^{j+1}- (a_n)^j }{\Delta t} e^{in\pi x_i}=&\frac{ e^{in\pi x_{i+1}} -2 e^{in\pi x_i}+ e^{in\pi x_{i-1}}}{\Delta x^2} (a_n)^j
+\frac{(a_n)^{j+1}- (a_n)^j }{\Delta t} e^{in\pi x_i}=&\frac{ e^{in\pi x_{i+1}} -2 e^{in\pi x_i}+ e^{in\pi x_{i-1}}}{(\Delta x)^2} (a_n)^j
 \end{align*}
 Dividing both sides by $(a_n)^j e^{in\pi x_{i+1}}$
 \begin{align*}
-\frac{(a_n)^{j}- 1 }{\Delta t} =&\frac{ e^{in\pi x_{1}} -2 + e^{in\pi x_{-1}}}{\Delta x^2}
+\frac{(a_n)^{j}- 1 }{\Delta t} =&\frac{ e^{in\pi x_{1}} -2 + e^{in\pi x_{-1}}}{(\Delta x)^2}
 \end{align*}
 Since $x_i=\Delta x \cdot i$:
 \begin{align*}
-\frac{(a_n)^{j}- 1 }{\Delta t} =&\frac{ e^{in\pi \Delta x} -2 + e^{-in\pi \Delta x}}{\Delta x^2}
+\frac{(a_n)^{j}- 1 }{\Delta t} =&\frac{ e^{in\pi \Delta x} -2 + e^{-in\pi \Delta x}}{(\Delta x)^2}
 \end{align*}
 And using $cos(x)=\frac{1}{2}\left(e^{ix}+e^{-ix} \right)$:
 \begin{align*}
-\frac{(a_n)^{j}- 1 }{\Delta t} =&\frac{ e^{in\pi \Delta x} -2 + e^{-in\pi \Delta x}}{\Delta x^2}
+\frac{(a_n)^{j}- 1 }{\Delta t} =&2 \frac{cos(n\pi \Delta x)-1}{(\Delta x)^2}\\
+=&-4 \frac{sin^2(n\pi \Delta x/2)}{(\Delta x)^2}
 \end{align*}
+Solving for $a_n$:
+\begin{align}
+a_n=1-4 \frac{\Delta t}{(\Delta x)^2}sin^2(n\pi \Delta x/2)
+\end{align}
+As $|T_n(t)|=|e^{-n^2\pi^2t}|\leq 1$ for all $n$, the same requirement is put on $|(a_n)^j|\leq 1$, which means that  
+$0 \leq 4 \frac{\Delta t}{(\Delta x)^2}sin^2(n\pi \Delta x/2) \leq 1 \implies \frac{\Delta t}{(\Delta x)^2} \leq 1/2$. \newline
+This means that when using the explicit forward Euler scheme, in order to obtain a stable numerical solution, $\frac{\Delta t}{(\Delta x)^2} \leq 1/2$.
+Similar analysis of the two other schemes leads to the conclusion that the implicit backward Euler and the Crank-Nicolson scheme are stable for all choices of $\Delta x$ and $\Delta t$ \citep[p.312]{HJ15}.
 \subsection{Algorithms}
 Developing a program which may numerically solve the Heat Equation (HQ) using either of the three approximation methods requires setting up the algorithms for each methods. Each algorithm will be tested for accuracy relative to the CFS, as a function of $\Delta x$ and time evolution. In order to accomplish this while assuring that as few parameters as possible needs to be specified in each program execution, the algorithms are developed to take only $\Delta x= dx$ and the total time $T$ as initiation parameters. In addition, developing general diffusion problem algorithms which require that the PDE, ICs and BCs are scaled, secures the streamlining of parameter calculations based on initiation parameters, and their range. As such, the total time $T$, temperature $U$, and position $x$ all have a range of $[0,1]$, where where $x=0$ and $x=1=(n+1)$. In the case of $T=1$, this corresponds to equilibration of temperature, since $T=T_*$ is the characteristic time scale of the diffusive process. \newline
 
@@ -550,7 +559,9 @@ Recalling that $\Delta x=\frac{1}{n+1} \implies n=\frac{1}{\Delta x}-1$. Thus, u
 \label{M.AlgoImpl}	
 The three algorithms are now implemented into a single program through code written in \textit{C++} with the armadillo library \cite{armadillo}. This is done by splitting the code into two files, one containing function calls that solve a specific problem - the main file, and one containing functions   based on the previously derived algorithms - the methods file. Execution of the compiled program takes the following arguments: "method", $\Delta x$, and $T$ as arguments. The "method" argument, either 1,2,3, or 4, corresponds to: the explicit scheme, the implicit scheme, the CN scheme, and LU decomposition using the armadillo library. In the main file, the value of the "method" argument is evaluated, and the corresponding algorithm executed by calling a method specific time iterating function. In each time step, the solution is moved one time step ($\Delta t$) forward. In the case of the CN scheme, this is achieved by sequentially calling the functions for the explicit and implicit schemes with adjusted parameters, such that the flow of operations fit the CN algorithm.
 
-In order to test the integrity of the algorithms in the program implementation, the compiled program is run with $\Delta x=0.1$, for two values of $T$, $T=0.05$ and $T=0.3$ - chosen through trial and error for solutions that are, in the $T=0.05$ case, smooth but significantly curved, and in the $T=0.3$ case, almost linear. The produced results for the explicit forward Euler method, the implicit backward Euler method, and the Crank-Nicolson method are then plotted along with the CFS of the problem (analytically derived in the \hyperref[M.CFS1d]{section on CFS to the 1D HQ}). The produced results are expected to \textbf{EXPECTED TO?}
+In order to test the integrity of the algorithms in the program implementation, the compiled program is run with $\Delta x=0.1$ and $\Delta x=0.01$, for two values of $T$, $T=0.05$ and $T=0.3$ - chosen through trial and error as solutions that are, in the $T=0.05$ case, smooth but significantly curved, and in the $T=0.3$ case, almost linear. The produced results for the explicit forward Euler method, the implicit backward Euler method, and the Crank-Nicolson method are then plotted along with the CFS of the problem (analytically derived in the \hyperref[M.CFS1d]{section on CFS to the 1D HQ}). If integrity of the algorithms have been preserved throughout implementation, this is expected to produce solutions visually similar to the CFS - since $\Delta t$ is calculated based on the stability criteria of the explicit Euler method. \newline
+
+Following the initial visual confirmation of algorithm integrity, the relative error compared to the CFS is examined for all three schemes using the same parameters as in the initial testing. Here, the Crank-Nicolson scheme is, on account of it's LTE beeing $O(\Delta t^2)$ and $O((\Delta x)^2)$, expected to yield results closest to the CFS.
 
 
 \subsection{Closed form solution to the 1D heat equation}
