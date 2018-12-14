@@ -16,7 +16,7 @@ outdata[1]=["results_FW_0.2T_0.1dx","results_BW_0.2T_0.1dx","results_CN_0.2T_0.1
 outdata[2]=["results_FW_0.05T_0.01dx","results_BW_0.05T_0.01dx","results_CN_0.05T_0.01dx"]
 outdata[3]=["results_FW_0.2T_0.01dx","results_BW_0.2T_0.01dx","results_CN_0.2T_0.01dx"]
 
-figurtitle=["../../Results/Comparison_1.png", "../../Results/Comparison_2.png"]
+figurtitle=["../../../Results/Comparison_1.pdf", "../../../Results/Comparison_2.pdf"]
 tab=np.zeros((3,2))
 
 average_error=np.zeros((3,4))
@@ -62,7 +62,7 @@ for step in range(0,2):
 
         
         axarr[l].plot(x,exact,label="Analytical")
-        axarr[l].set_title("$t_f=%2g$"%(T),fontsize=10)
+        axarr[l].set_title("$T=%2g$"%(T),fontsize=10)
         
     for i in range (2):
         axarr[i].axis('equal')
@@ -70,12 +70,12 @@ for step in range(0,2):
         axarr[i].grid(True, linestyle='-.')
         axarr[i].legend()
         axarr[i].set_xlabel('$x$')
-        axarr[i].set_ylabel('$temperature$')
+        axarr[i].set_ylabel('$u(x,t)$')
     plt.savefig("%s"%figurtitle[step], bbox_inches='tight')
 
 #plt.show()
 
-outfile=open("../../Results/tab_maxerror.txt","w") 
+outfile=open("../../../Results/tab_maxerror.txt","w") 
 for i in range(0,3):
     for j in range(0,4):
         outfile.write(tex(max_error[i,j]))
@@ -85,7 +85,7 @@ for i in range(0,3):
             outfile.write(" & ")  
 outfile.close()
 
-outfile=open("../../Results/tab_average.txt","w") 
+outfile=open("../../../Results/tab_average.txt","w") 
 for i in range(0,3):
     for j in range(0,4):
         outfile.write(tex(average_error[i,j]))
