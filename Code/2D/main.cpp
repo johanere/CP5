@@ -20,6 +20,7 @@ int main()
 
   int n=(1/h)-1.0;
   int graph=0;
+  int incgam=1;
   int factor=6.0;
 
   string fileout = "Data/";      // name of output file
@@ -43,7 +44,7 @@ int main()
   for (int k=1;k<=factor;k++)
   {
     cout<<k<<endl;
-    dtscale=(double)(1.0/k);
+    dtscale=(double)(1.0/(4.2-(1.0/k)));
 
     dt=dtscale*h*h;          // stepsize time
     alpha = dt/(h*h);    // coefficient used to determine elements in matrix
@@ -83,7 +84,14 @@ int main()
     }
 
     avrerr=accu(relerr)/(n*n);
-    ofile << setw(15) << setprecision(8) <<avrerr<<" " <<dtscale<<endl;
+  if (incgam==1)
+  {
+    ofile << setw(15) << setprecision(8) <<dtscale<<" "<<avrerr<<endl;
+  }
+  else
+  {
+    ofile << setw(15) << setprecision(8) <<avrerr<<endl;
+  }
   }
   ofile.close();
 
