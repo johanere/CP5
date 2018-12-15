@@ -13,7 +13,7 @@ int main()
 {
   string filename;
 
-  string h_s="0.005";
+  string h_s="0.01";
   string T_s="0.2";
   double h=stof(h_s);
   double T=stof(T_s);
@@ -21,10 +21,10 @@ int main()
   int n=(1/h)-1.0;
   int graph=0;
   int incgam=1;
-  int factor=6.0;
+  int factor=6;
 
   string fileout = "Data/";      // name of output file
-  fileout.append("Avr_relerr_");
+  fileout.append("Avr_");
   fileout.append(h_s);
   fileout.append("_");
   fileout.append(T_s);
@@ -44,7 +44,7 @@ int main()
   for (int k=1;k<=factor;k++)
   {
     cout<<k<<endl;
-    dtscale=(double)(1.0/(4.2-(1.0/k)));
+    dtscale=(double)(4.2-(1.0/k)));
 
     dt=dtscale*h*h;          // stepsize time
     alpha = dt/(h*h);    // coefficient used to determine elements in matrix
@@ -98,18 +98,26 @@ int main()
   if (graph==1) {
   cout<<"producing data for plotting"<<endl;
   fileout = "Data/";      // name of output file
-  fileout.append("exact");
+  fileout.append("exact1");
   ofile.open(fileout);
   ofile << setiosflags(ios::showpoint | ios::uppercase);
   ofile << setw(15) << setprecision(8) <<exact<<endl;
   ofile.close();
 
   fileout = "Data/";      // name of output file
-  fileout.append("numerical");
+  fileout.append("numerical1");
 
   ofile.open(fileout);
   ofile << setiosflags(ios::showpoint | ios::uppercase);
   ofile << setw(15) << setprecision(8) <<v<<endl;
+  ofile.close();
+
+  fileout = "Data/";      // name of output file
+  fileout.append("relerr");
+
+  ofile.open(fileout);
+  ofile << setiosflags(ios::showpoint | ios::uppercase);
+  ofile << setw(15) << setprecision(8) <<relerr<<endl;
   ofile.close();
   }
 

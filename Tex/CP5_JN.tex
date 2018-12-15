@@ -737,20 +737,20 @@ u(x,y,t)= \frac{4}{\pi^2} \sum_{m=1}^{\infty} \sum_{n=1}^{\infty} \frac{ (-1)^{m
 \section{Results}
 Figures \ref{fig:Comparison1} and \ref{fig:Comparison2} show that all three methods produce solutions that are visually similar to the CFS for both $T=0.05$ and $T=0.2$, for either $\Delta x =0.1$ or $\Delta x =0.01$. In figure \ref{fig:Comparison1}, there is a visually detectable deviation between the CFS and the implicit and explicit Euler methods, which do not appear in any of the other four cases. \newline
 The examination of the relative errors has been split into two tables; Table \ref{tab:MaxError1} shows the maximum relative error between the three solutions and the CFS for both $\Delta x=0.1$ and $\Delta x=0.01$ when running the simulations from $T=0$ to $T=0.05$ and $T=0.2$. Table \ref{tab:AvrError1} shows the average relative error under the same conditions.\newline
-In the 2D case, figure \ref{fig:2dexact} shows the CFS using $h=0.01, \Delta t=1/4h^2$ in the $T=0.2$ case. Figure \ref{fig:2dnumerical} shows the numerical solution produced by the 2D explicit FW Euler, using the same parameters. In addition, table \ref{tab:2DHQ.gamma} shows the average relative error of the numerical solution when varying $\gamma$ ($\Delta t= \gamma h^2$) and $h$.
+In the 2D case, figure \ref{fig:2dexact} shows the CFS using $h=0.01, \Delta t=1/4h^2$ in the $T=0.2$ case. Figure \ref{fig:2dnumerical} shows the numerical solution produced by the 2D explicit FW Euler, using the same parameters, while Figure \ref{fig:2drelerr} shows the relative error. In addition, table \ref{tab:2DHQ.gamma} shows the average relative error of the numerical solution when varying $\gamma$ ($\Delta t= \gamma h^2$) and $h$.
 
 
 
 \begin{figure}[!htb]
         \centering 
-         \includegraphics[scale=.7]{../Results/Comparison_1.pdf} 
+         \includegraphics[scale=.6]{../Results/Comparison_1.pdf} 
         \caption{Comparison of solution for all three methods with CFS,  using $\Delta x=0.1$}
         \label{fig:Comparison1}   
 \end{figure}  
 
 \begin{figure}[!htb]
         \centering 
-         \includegraphics[scale=.7]{../Results/Comparison_2.pdf} 
+         \includegraphics[scale=.6]{../Results/Comparison_2.pdf} 
         \caption{Comparison of solution for all three methods with CFS,  using $\Delta x=0.01$}
         \label{fig:Comparison2}   
 \end{figure}  
@@ -829,6 +829,13 @@ Crank-Nicolson&$4.5 \cdot 10^{-2}$ & $1.3 \cdot 10^{-3}$ & $6.5 \cdot 10^{-4}$ &
 \end{figure}  
 
 
+\begin{figure}[!htb]
+        \centering 
+         \includegraphics[scale=.7]{../Results/2drelerr.pdf} 
+        \caption{Plot of relative error from 2D explicit FW Euler using $h=0.01$, $\Delta t=\frac{1}{4} h^2$, and $T=0.2$}
+        \label{fig:2drelerr}   
+\end{figure}  
+
 \begin{table}[h!tb]
     \centering
     \caption{2DHQ: Average relative error when varying $\Delta t=\gamma h^2$}
@@ -851,6 +858,26 @@ columns/info/.style={sci zerofill
 {rgamma.dat}
 \label{tab:2DHQ.gamma}
 \end{table}
+
+\section{Discussion of results}
+Figures \ref{fig:Comparison1} and \ref{fig:Comparison2} indicate that the initial implementation was successful, as the plots produced are similar to the CFS for all chosen parameters. In the $\Delta x=0.1$, the explicit FW and implicit BW Euler schemes have visually detectable deviations from CFS. This is however to be expected, as $\Delta x$ is quite small. \newline
+Table \ref{tab:AvrError1}, shows the average relative error (ARE) for all three methods, for both $\Delta x=0.1$ and $\Delta x=0.01$ in the $T=0.05$ (referred to curved $u$) and $T=0.2$ (referred to as linear $u$) cases. A cursory examination indicate that most of the displayed relative errors as functions of $\Delta x$ are within the expected magnitudes, the exceptions being the curved $u$, $\Delta x=0.1$ case, and for the explicit and implicit Euler schemes also in the linear $u$, $\Delta x=0.1$ case. This may either indicate implementation error or wrongly expected precision. A possible reason may be that the parameters do not allow the numerical solutions a sufficient number of cycles with respect to $\Delta t$ vs $T$. As the table shows average values, it may be that the methods mostly produce results within the expected error magnitudes, and that the average error is significantly shifted due to outliers at critical values of $x$. All inn all, the error magnitude appears to be $10^{-2}$ to $10^{-3}2$ for $\Delta x=0.1$ with the exception of BW Euler ($10^{-1}$ for curved $u$), and in the $\Delta x=0.01$ case, between $10^{-3}$ to $10^{-5}$ for all methods. Both magnitude ranges are $\sim (\Delta x)^2$ and to a varying degree  $\sim \Delta t (\Delta x)^2$.  Further study of the relative error is divided into two separate cases, $\Delta x=0.1$ and $\Delta x=0.01$.\newline
+\paragraph{1.}
+In the $\Delta x=0.1$ case, the Crank-Nicolson scheme performs significantly better than the other two methods. indicating that this method is more suited when $\Delta x$ is relatively small. The maximum relative errors (MRE) in table \ref{tab:MaxError1} further bolsters this hypothesis, as the CN scheme has the lowest values in the $\Delta x=0.1$ case there as well. Looking at MRE, the FW and BW Euler methods appear to perform equally well. Comparison with ARE however, shows that the BW Euler falls behind the FW Euler in precision for low $\Delta x$. This may, again, be the result of outliers at critical points, but holds true with regards to relative error nonetheless. Based on this, the CN scheme appears to be the best suited for low $\Delta x$ (ARE $10^{-2}$ to $10^{-3}$), and the BW Euler the least suited (ARE curved $u$ one order of magnitude larger than CN) . 
+\paragraph{2.}
+Examination of the $\Delta x=0.01$ case shows a different trend than what is to be observed in the $\Delta x=0.1$ case. In terms of MRE, all three methods are within the same order of magnitude in the curved $u$ case, with the CN scheme performing the best. Comparing this to the corresponding ARE values, shows the same trend, with the exception of BW performing less well yet again. This, together with the earlier indications on BW Euler, indicates that BW Euler is unstuited for curved $u$ (error one order of magnitude larger than best method). Looking at the values for $T=0.2$, both ARE and MRE show that the FW Euler method falls behind in accuracy. This indicates a (relative) unsuitability for the method in cases where $\Delta t$ is high and $u$ linear. For linear $u$, BW Euler performs the best, closely followed by CN. This indicates that the BW Euler and CN schemes are well suited for curved $u$ and high $\Delta x$ (error $\sim 10^{-5}$. \newline
+\paragraph{Remarks:}
+The indications described above may be erroneous on account of implementation methods. In particular, the overall (relatively) poor performance by BW Euler leads to the possibility that discrepancies were made in either the algorithm or it's implementation.\newline
+
+\paragraph{2 spatial dimentions:}
+By visually comparing figures \ref{fig:2dexact} and \ref{fig:2dnumerical}, the implementation of the explicit FW Euler method to the 2D heat equation problem appears successful - both figures show solutions of the same shape and with the same order of magnitude for $h=0.01$, $\Delta t=\frac{1}{4} h^2$ at $T=0.2$. Table \ref{tab:2DHQ.gamma} (NaN - exceedingly large number), shows the average relative error (ARE) as a function of $\Delta t/h^2 = \gamma $, for various values of $h$. $\frac{\Delta t}{(\Delta x)^2}\leq \gamma=4$ appears to be the stability limit of the 2 dimensional explicit forward Euler scheme. For $h=0.1$ the ARE reaches reasonable values at $\gamma\approx 0.27$, but in both the $h=0.01$ and $h=0.005$ cases, $\gamma>1/4$ produce exceedingly large errors. When comparing the values of $h$ for $\gamma=1/4$, the error is reduced from $h=0.1$ to $h=0.01$, as is expected. However, the ARE is not even remotely close to $\sim h^2$. Additionally, the ARE appears to be approximately the same for $h=0.01$ and $h=0.005$. This may be due to a faulty algorithm, erroneous implementation, a wrongly calculated exact solution (either when derived  or implemented), average shift due to solution outliers, or due to the indication from the 1D case for the FW Euler to be unsuited for the choice of $T$. However, examining \ref{fig:2drelerr}, it is clear that the relative error approximately $0.175$ uniformly across the grid, which means that there are no outliers shifting the ARE.
+
+
+\subsection{Conclusions}
+Based on the indications described under discussion of results, it is concluded that overall error magnitudes are $\sim (\Delta x)^2$ and to a varying degree  $\sim \Delta t (\Delta x)^2$. The Crank-Nicolson scheme (local truncation error $\sim O((\Delta t)^2)$ and $O((\Delta x)^2)$) is concluded as the overall most precise method due to relative errors $\sim (\Delta x)^2$. In the case of solutions at low ratio of characteristic diffusive time, the implicit backward Euler scheme is concluded as the least suited. due to producing average relative errors one order of magnitude larger than the Crank-Nicolson method. On the other hand, for solutions closer to characteristic diffusion time, with a high number of discretization points, the implicit backward Euler scheme produced the smallest average relative errors ($1.3 \cdot 10^{-5}$). The explicit forward Euler method is concluded as unsuited for solutions at ratios to characteristic diffusion time higher than $\sim 0.1$ when large spatial grids are deployed. In the case of two spatial dimensions, the explicit forward Euler produces a solution similar to the closed form solution. No further conclusions may however be drawn on the 2 dimensional case, as discrepancies manifesting in the relative error not following the predicted local truncation error were observed. Lastly, it is possible that the code implementing the implicit backward Euler (in the 1D case) is erroneous. In order to verify the conclusions on this method, a re-examination of this method is therefore required.
+\newline
+
+
 
 
 \bibliography{ref}
