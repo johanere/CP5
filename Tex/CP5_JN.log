@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6500 64-bit) (preloaded format=pdflatex 2018.1.3)  15 DEC 2018 00:59
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6500 64-bit) (preloaded format=pdflatex 2018.1.3)  15 DEC 2018 01:57
 entering extended mode
 **./CP5_JN.tex
 (CP5_JN.tex
@@ -1213,78 +1213,62 @@ Underfull \hbox (badness 10000) in paragraph at lines 562--563
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 573--575
+Underfull \hbox (badness 10000) in paragraph at lines 574--576
 
  []
 
 [15]
-Overfull \hbox (6.79999pt too wide) in paragraph at lines 615--615
+Overfull \hbox (6.79999pt too wide) in paragraph at lines 616--616
  [] 
  []
 
 [16] (C:\Johan\Miktex\tex\latex\ucs\uni-32.def
 File: uni-32.def 2013/05/13 UCS: Unicode data U+2000..U+20FF
 )
-Underfull \hbox (badness 10000) in paragraph at lines 621--622
+Underfull \hbox (badness 10000) in paragraph at lines 622--623
 
  []
 
 [17]
 
-Package natbib Warning: Citation `]' on page 18 undefined on input line 654.
+Package natbib Warning: Citation `]' on page 18 undefined on input line 655.
 
-[18] [19]
-Underfull \hbox (badness 10000) in paragraph at lines 724--726
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 753--754
-
- []
-
-[20]
-<../Results/Comparison_1.pdf, id=356, pagebox=cropbox, 559.095pt x 281.14787pt>
+[18] [19] [20]
+<../Results/Comparison_1.pdf, id=351, pagebox=cropbox, 559.095pt x 281.14787pt>
 
 File: ../Results/Comparison_1.pdf Graphic file (type pdf)
 <use ../Results/Comparison_1.pdf>
-Package pdftex.def Info: ../Results/Comparison_1.pdf  used on input line 785. o
-n input line 785.
+Package pdftex.def Info: ../Results/Comparison_1.pdf  used on input line 745. o
+n input line 745.
 Package pdftex.def Info: Requested size: 335.45958pt x 168.69002pt on input lin
-e 785.
-<../Results/Comparison_2.pdf, id=357, pagebox=cropbox, 559.095pt x 281.14787pt>
+e 745.
+<../Results/Comparison_2.pdf, id=352, pagebox=cropbox, 559.095pt x 281.14787pt>
 
 File: ../Results/Comparison_2.pdf Graphic file (type pdf)
 <use ../Results/Comparison_2.pdf>
-Package pdftex.def Info: ../Results/Comparison_2.pdf  used on input line 792. o
-n input line 792.
+Package pdftex.def Info: ../Results/Comparison_2.pdf  used on input line 752. o
+n input line 752.
 Package pdftex.def Info: Requested size: 335.45958pt x 168.69002pt on input lin
-e 792.
- (CP5_JN.bbl [21] [22 <../Results/Comparison_1.pdf> <../Results/Comparison_2.pd
-f
-
-pdfTeX warning: pdflatex (file ../Results/Comparison_2.pdf): PDF inclusion: mul
-tiple pdfs with page group included in a single page
->] [23]
+e 752.
+ (CP5_JN.bbl [21 <../Results/Comparison_1.pdf>]
 LaTeX Font Info:    Try loading font information for T1+lmtt on input line 17.
- (C:\Johan\Miktex\tex\latex\lm\t1lmtt.fd
+
+(C:\Johan\Miktex\tex\latex\lm\t1lmtt.fd
 File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `lmtt' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
-)
+ [22 <../Results/Comparison_2.pdf>])
 
 Package natbib Warning: There were undefined citations.
 
-[24
-
-]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 859.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 859.
+[23]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 819.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 819.
  (CP5_JN.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 859.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 819.
 
 
  *File List*
@@ -1424,18 +1408,18 @@ gettitlestring.sty    2016/05/16 v1.5 Cleanup title references (HO)
   t1lmtt.fd    2009/10/30 v1.6 Font defs for Latin Modern
  ***********
 
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 859.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 819.
 Package rerunfilecheck Info: File `CP5_JN.out' has not changed.
 (rerunfilecheck)             Checksum: E7CB1B6B9110660EF8DF2F058FBE3955;901.
  ) 
 Here is how much of TeX's memory you used:
- 32382 strings out of 493312
- 737346 string characters out of 3144112
- 958075 words of memory out of 3000000
+ 32369 strings out of 493312
+ 737184 string characters out of 3144112
+ 957476 words of memory out of 3000000
  35004 multiletter control sequences out of 15000+200000
  96852 words of font info for 150 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 69i,17n,98p,1176b,609s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 69i,14n,98p,1176b,609s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Johan/Miktex/fonts/enc/dvips/lm/lm-ec.enc}{C:/Johan/Miktex/fonts/enc/dvip
 s/lm/lm-mathsy.enc}{C:/Johan/Miktex/fonts/enc/dvips/lm/lm-rm.enc}{C:/Johan/Mikt
 ex/fonts/enc/dvips/lm/lm-mathit.enc}{C:/Johan/Miktex/fonts/enc/dvips/lm/lm-math
@@ -1451,9 +1435,9 @@ m/lmr9.pfb><C:/Johan/Miktex/fonts/type1/public/lm/lmri10.pfb><C:/Johan/Miktex/f
 onts/type1/public/lm/lmsy10.pfb><C:/Johan/Miktex/fonts/type1/public/lm/lmsy5.pf
 b><C:/Johan/Miktex/fonts/type1/public/lm/lmsy7.pfb><C:/Johan/Miktex/fonts/type1
 /public/lm/lmtt10.pfb>
-Output written on CP5_JN.pdf (24 pages, 476879 bytes).
+Output written on CP5_JN.pdf (23 pages, 474053 bytes).
 PDF statistics:
- 587 PDF objects out of 1000 (max. 8388607)
- 151 named destinations out of 1000 (max. 500000)
+ 568 PDF objects out of 1000 (max. 8388607)
+ 138 named destinations out of 1000 (max. 500000)
  26751 words of extra memory for PDF output out of 29859 (max. 10000000)
 

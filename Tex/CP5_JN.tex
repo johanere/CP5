@@ -149,7 +149,7 @@ Numerically solving linear diffusion problems with Dirichlet boundary conditions
 
 % --- begin date ---
 \begin{center}
-Nov 21, 2018
+Des 14, 2018
 \end{center}
 % --- end date ---
 
@@ -564,6 +564,7 @@ In order to test the integrity of the algorithms in the program implementation, 
 Following the initial visual confirmation of algorithm integrity, the relative error compared to the CFS is examined for all three schemes using the same parameters as in the initial testing. Here, the Crank-Nicolson scheme is, on account of it's LTE beeing $O(\Delta t^2)$ and $O((\Delta x)^2)$, expected to yield results closest to the CFS. Additionally, the relative error is expected to decrease as $T$ increases, since this brings the solution closer to the equilibrium state in which all (stable) methods should converge. Lastly, considering that all methods have LTE $\sim O((\Delta x)^2)$ and $\sim O(\Delta t)$ or better, the relative error is expected to decrease with $\Delta x$, and should be within the magnitudes $ 10^{-2}$ to $\cdot 10^{-3}$  in the $\Delta x=0.1$ case, and $10^{-4}$ to $10^{-5}$ in the $\Delta x=0.01$.
 
 \subsection{Modifying program to solve the 2D heat equation}
+\label{M.2dmod}
 In order to examine the consequences of numerically solving the heat equation in two spatial dimensions, the explicit forward Euler algorithm is extended to solve a PDE of the type:
 \begin{align}
 PDE:& \quad \frac{\partial u}{\partial t}=\left(\frac{\partial^2 u}{\partial x^2}+\frac{\partial^2 u}{\partial y^2}\right) \label{eq:2DPDE}\\
@@ -613,15 +614,14 @@ Using the same train of thought applied in finding the 1D explicit forward Euler
 \item If $t<T$, repeat step 2.
 \item Else end simulation.  
 \end{enumerate}}}\end{center}
-Based on this algorithm, a separate program is developed - following the same pattern as the original. This program compares the solution from the algorithm implementation with the CFS, derived under 
-\hyperref[M.CFS2D]{section on CFS to the 1D HQ}).
+Based on this algorithm, a separate program is developed - following the same pattern as the original. This program compares the solution from the algorithm implementation with the CFS, derived under \hyperref[M.CFS2D]{section on CFS to the 1D HQ}). The program implements the scaled 2D PDE \eqref{eq:2DPDE}, with homogeneous boundary conditions equal zero, and $f(x)=xy$. In order to study the stability of the numerical solution as a function of $\Delta t$,
 
 \subsection{Closed form solution to the 1D heat equation}
 \label{M.CFS1d}
 When feasible, obtaining a CFR to the heat equation depends on the specifics of the problem, suchs as the ICs and the BCs. Various problems require different mathematical methods in order to solve the PDE. The most common types of problem are thoroughly described indepth in scientific literature on PDEs, see for example the comprehensive book on ODEs and PDEs by Agarwal and O’Regan (\cite{ravi}) or mathematical methods in physics by Mary L. Boas (\cite{matmet}). Below, the CFS to the scaled rod problem (\eqref{eq:scaled.rodBC}, \eqref{eq:scaled.rodIC} \eqref{eq:scaled.rodBC}) is obtained through  application of some of these mathematical methods. \newline
 
 
-When solving a PDE with homogeneous (scaled) BCs ($u(0,t)=u(1,t)$), applying separation of variables is usually the first step. However, as $u(0,t)\neq u(1,t)$ the scaled rod problem is a PDE with inhomogeneous Dirichlet condition, therefore a direct application of separation of variables is not beneficial. Instead, when faced with constant inhomogeneous BCs, the solution, $u(x,t)$, is rewritten as $v(x,t)$, in such a way that $v(x,t)$  has homogenous BCs.  \newline
+When solving a PDE with homogeneous (scaled) BCs ($u(0,t)=u(1,t)$), applying separation of variables is usually the first step. However, as $u(0,t)\neq u(1,t)$ the scaled rod problem is a PDE with inhomogeneous Dirichlet condition, therefore a direct application of separation of variables is not beneficial. Instead, when faced with constant inhomogeneous BCs, the solution, $u(x,t)$, is rewritten as $v(x,t)$, in such a way that $v(x,t)$  has homogeneous BCs.  \newline
 The variable transformation $v(x,t)=u(x,t)-u_E$, relies on the steady-state solution $u_E$, which satisfies both the PDE and BCs. This steady-state solution signifies a distribution of temperature in which the diffusive flow is zero - it is therefore independent of time, and does therefore not rely on the ICs. After all, once in equilibrium state, a system tends to maintain equilibrium.  In the case of the scaled rod:
 \begin{align}
 u_E''=0,\quad 0<x<1, \quad &\implies u_E=u(1)x\\
@@ -714,66 +714,25 @@ u(x,t)=&u_E+v(x,t) \\
 
 \subsection{Closed form solution to the 2D heat equation}
 \label{M.CFS2D}
-\textbf{step 1: Find equilibrium solution}
+The process of finding a CFS solution to the 2D problem uses the same train of thought as the one described in detail for the 1D case. Using \eqref{eq:2DPDE} through \eqref{eq:2DBC2}, a general expression for $u(x,y,t)$ may be found \cite[pp. 284-286]{ravi}:
+\begin{equation}
+u(x,y,t)=\sum_{m=1}^{\infty} \sum_{n=1}^{\infty} a_{mn} sin(m \pi x) sin (n \pi x) e^{-\pi^2(m^2+n^2)t} 
+\end{equation}
+Where the weight for each particular solution, $a_{mn}$ may be found through the following equation, provided that $f(x,y)$ is specified.
+\begin{equation}
+a_{mn}=4 \int_0^1 \int_0^1 f(x,y)  sin(m \pi x) sin(n \pi x) dx dy 
+\end{equation}
+
+As mentioned when first \hyperref[M.2dmod]{introducing the 2D problem}, the program is implemented using $f(x,y)=xy$, which yields
+\begin{align*}
+a_{mn}&=4 \frac{\left(\pi m cos(\pi m) - sin(\pi m)) (\pi n cos(\pi n) - sin(\pi n))\right)}{\pi^4 m^2 n^2}\\
+&=4 \frac{\left(\pi m (-1)^m) (\pi n (-1)^n)\right)}{\pi^4 m^2 n^2}, \quad m=1,2,... \quad n=1,2,...\\
+&=\frac{4}{\pi^2} \frac{ (-1)^m  (-1)^n)}{ m n}, \quad m=1,2,... \quad n=1,2,...\\
+\end{align*}
+Which means that that CFS to \eqref{eq:2DPDE} with BCs \eqref{eq:2DBC1} and \eqref{eq:2DBC2}, under the ICs $f(x,y)=xy$ is:
 \begin{align}
-u_t=\nabla^2 u, \text{   } (x,y)\in D \\
-u(x,y)=1, \{x=1\} \\
-u(x,y)=0, \text{ else}
+u(x,y,t)= \frac{4}{\pi^2} \sum_{m=1}^{\infty} \sum_{n=1}^{\infty} \frac{ (-1)^{m+n}}{ m n} sin(m \pi x) sin (n \pi x) e^{-\pi^2(m^2+n^2)t}
 \end{align}
-
-In order to solve this, one may use Laplace's equation on a rectangle. However, with these particular B.C.s, the solution is quite clearly:
-$u_E(x,y)=x$, as it is simply the two dimensional variant of the earlier described one dimentional heat equation problem. \newline
-
-Applying B.C.s: 
-
-
-\textbf{step 2: Change variable}
-$v(x,y,t)=u(x,y,t)-u_E{x,y}=u(x,y,t)-x$
-
-\textbf{step 3: Solve}
-\begin{align}
-v_t=\nabla^2 v, (x,y) \in D, t>0 \\
-u(x,y,t)=\begin{cases}
-1, \text{	} \{x=1,y\} \\
-0, \text{ otherwise on } \partial D
-\end{cases} \\
-u(x,y,0)=f(x,y)
-\end{align}
-
-\begin{equation}
-v(x,y,t)=\sum_{m=1}^{\infty} \sum_{n=1}^{\infty} A_{mn} sin (m\pi x) sin (n \pi y) e^{-\pi^2(m^2+n^2)t}
-\end{equation}
-
-Where 
-\begin{equation}
-A_{mn}=4 \int_0^1 \int_0^1 \left( f(x,y)-u_E(x,y)\right) sin (m\pi x) sin (n \pi y) dy dx 
-\label{eq:Amn}
-\end{equation}
-
-In this case, $f(x,y)-u_E(x,y)=-x$, such that\\
-\begin{align}
-\eqref{eq:Amn}&=4 \int_0^{1} \int_0^{1} (-xy) sin (m \pi x) sin (n \pi y) dy dx \\
-&= \frac{-4}{\pi^3 m^2 n} \left(cos(\pi n-1\right) \left( \pi m cos(\pi m)-sin(\pi m)\right)
-\end{align}
-$m,n=1,2,3... \implies$
-\begin{align}
-A_{mn}&=\frac{-4}{\pi^3 m^2 n} \left( (-1)^n-1\right) \left( \pi m (-1)^m-0\right) \\
-&=\frac{4  (-1)^{m+1}}{\pi^2 m n} \left((-1)^n-1\right) 
-\end{align}
-Which means that:
-\begin{equation}
-v(x,y,t)=\frac{4}{\pi^2}\sum_{m=1}^{\infty} \sum_{n=1}^{\infty} \frac{ (-1)^{m+1}}{ m n} \left((-1)^n-1\right) sin (m\pi x) sin (n \pi y) e^{-\pi^2(m^2+n^2)t}
-\end{equation}
-
-\textbf{SOLSOL}
-\begin{equation}
-u(x,y,t)=\sum_{m=1}^{\infty} \sum_{n=1}^{\infty} a_mn sin (m\pi x) sin (n \pi y) e^{-\pi^2(m^2+n^2)t}
-\end{equation}
-\begin{equation}
-a_mn=4\int_0 \int^1 sin (\pi x)  sin (\pi y) sin (m\pi x)  sin (n \pi y) dx dy
-\end{equation}
-
-
 \section{Results}
 Figures \ref{fig:Comparison1} and \ref{fig:Comparison2} show that all three methods produce solutions that are visually similar to the CFS for both $T=0.05$ and $T=0.2$, for either $\Delta x =0.1$ or $\Delta x =0.01$. In figure \ref{fig:Comparison1}, there is a visually detectable deviation between the CFS and the implicit and explicit Euler methods, which do not appear in any of the other four cases. \newline
 The examination of the relative errors has been split into two tables; Table \ref{tab:MaxError1} shows the maximum relative error between the three solutions and the CFS for both $\Delta x=0.1$ and $\Delta x=0.01$ when running the simulations from $T=0$ to $T=0.05$ and $T=0.2$. Table \ref{tab:AvrError1} shows the average relative error under the same conditions.
