@@ -129,7 +129,7 @@ final,                   % draft: marks overfull hboxes, figures with paths
 \begin{center}
 {\LARGE\bf
 \begin{spacing}{1.25}
-Numerically solving linear diffusion problems with Dirichlet boundary conditions
+Numerically solving the heat equation using finite-difference methods
 \end{spacing}
 }
 \end{center}
@@ -153,51 +153,31 @@ Des 14, 2018
 \end{center}
 % --- end date ---
 
-\vspace{1cm}
+\vspace{5cm}
 \begin{abstract}
-AOooo
+This project aims to examine the suitability of three finite-difference methods in numerically approximating the heat equation; the explicit forward Euler scheme (FW), the implicit backward Euler scheme (BW), and the Crank-Nicolson scheme (CN). By comparing the results produced by these methods to the closed form solution of a simplified heat diffusion problem, this project finds that the Crank-Nicolson scheme (local truncation error $\sim O((\Delta t)^2)$ and $O((\Delta x)^2)$) is concluded as the overall most precise method due to relative errors $\sim (\Delta x)^2$. The two other schemes are determined unsuitable for certain types of solutions. In the case of FW, solutions at a time, $T$, with a high ratio to the characteristic diffusion time ($T\sim T_*$) and discretization points $\sim 10^2$. In the case of BW, solutions at $T<<T_*$. Additionally, this project makes a cursory examination of the application of FW to a diffusive problem in two spatial dimensions, where the only certain conclusion was the the scheme produced results similar in shape and magnitude to the closed form solution.
 \end{abstract}
 
-
+\newpage
 
 \section{Introduction}
 When a system is in a state where the spatial density distribution of some quantity is unequilibrated, a flow from regions of high density to regions of low density occurs. This phenomenon, known as diffusion, is described by Fick's first law, named after the German physician Adolf Eugen Fick. Fick's first law states that the diffusional flux \footnote{The diffusional flux is the quantity transport per unit time per unit area, perpendicular to the direction of the diffusion} is proportional to the concentration gradient of the diffusing component \citep[pp. 339-340]{MatSci}. Less precisely, it can be said that the strength of the diffusional flow at a specific place, corresponds to how strongly the density varies around that place. Application of a conservation law appropriate to the diffusing quantity leads to what is either known as Fick's second law, or the continuity equation \citep[pp.341-342]{MatSci}). \\
-The continuity equation, may, under the constraints of linearity between gradient and flow, be expressed as the partial differential equation (PDE) known as the heat equation. Diffusion problems where one can assume such linearity may be expressed through \eqref{eq:HeateqGEN}. Typically, such linearity is the domain of bodies with uniform properties. Along with the appropriate initial conditions (ICs) and boundary conditions (BCs), the closed form solution of the PDE may sometimes be obtained using certain methods, of which some are outlined later in this project. However, when describing real physical systems, such closed form solution are often not obtainable, yet the same computational procedures may often be applied in providing a numerical solution. Finite-difference methods (FDM) are perhaps the most commonly applied type of method for solving PDEs. In short, FDMs are discretization methods in which the derivatives of a differential equation is approximated using by finite differences \citep[p. 46]{compPDE}, usually obtained through a Taylor expansion. \newline
+The continuity equation, may, under the constraints of linearity between gradient and flow, be expressed as the partial differential equation (PDE) known as the heat equation. Diffusion problems where one can assume such linearity may be expressed through \eqref{eq:HeateqGEN}. Typically, such linearity is the domain of bodies with uniform properties. Along with the appropriate initial conditions (ICs) and boundary conditions (BCs), the closed form solution of the PDE may sometimes be obtained using certain methods, of which some are outlined later in this project. However, when describing real physical systems, such closed form solution are often not obtainable, yet the same computational procedures may often be applied in providing a numerical solution. Finite-difference methods (FDM) are perhaps the most commonly applied type of method for solving PDEs. In short, FDMs are discretization methods in which the derivatives of a differential equation is approximated using by finite differences \citep[p. 46]{compPDE}, usually obtained through a Taylor expansion. 
 
-The starting point for project, heat equation problem, to which a closed form solution (CFS) is obtainable. Subsequently, the three FDMs are itnroduced and explained, algorithms developed, and tested on the PDE and compared to CFS.   especially chosen because it has relatively easily obtainable closed form solution. 
+\paragraph{Project flow:} This project starts by introducing the heat equation problem and a simple example to which it may be applied - the equalization of heat in a one dimensional rod. Then, a procedure for scaling the heat equation is outlined, and applied to the PDE obtained from the rod problem. A general approach to discretizing a scaled heat equation problem is thereafter presented, before the finite Finite-difference methods used in the project are described mathematically.\newline
+The explicit forward Euler scheme, the implicit backward Euler scheme, and the Crank-Nicolson schemes are brought to the form of matrix products, which in the case of the two latter FDMs are then used to procure scheme algorithms. As the Crank-Nicolson scheme may be expressed as a combination of the two Euler schemes, setting up it's algorithm depends on linking it's mathematical expression to that of the two Euler methods. This is done through the matrix representations. The nature of the explicit forward Euler scheme is such that it may be expressed rather straight forward from a mathematical description to an algorithm - it's matrix product is solely used to connect it to the Crank-Nicolson scheme. In contrast to the other two methods, the explicit forward Euler scheme is not always stable. It's stability relies on the ratio between the time step,$\Delta t$, and the square of step in spatial coordinates, $(\Delta x)^2$. Due to this, the algorithms use the explicit forward Euler methods stability criteria when choosing $\Delta t$ \newline
+Having expressed the algorithm for each method, the project goes on to implementing the algorithms in a single program, using the scaled rod PDE. The program is then tested with emphasis on relative error, compared with the closed form solution. A procedure for finding the CFS is described in a section of it's own. \newline
+Lastly, the heat equation is extended to two spatial dimensions. Here, the explicit forward Euler scheme is utilized, albeit in a more extensive form, as it now aims to solve for one more variable. The mathematical expression for this method in 2 (spatial) dimensions is then brought to the form of an algorithm, which is implemented into a new program. The results produced by this program is then compared with the CFS to the 2D heat equation, which is outlined in a section of it's own - though with less detail than the 1D case. In comparing the approximation method with the CFS, attention is especially given to the stability of the solution as a function of constraints on the $\Delta t$ and $h=\Delta x =\Delta y$.
 
+\paragraph{Main findings}
+Through examining the solutions produced by the algorithm implementations, this project goes on to concluding that overall error magnitudes are $\sim (\Delta x)^2$ and to a varying degree  $\sim \Delta t (\Delta x)^2$. Furthermore, the Crank-Nicolson scheme (local truncation error $\sim O((\Delta t)^2)$ and $O((\Delta x)^2)$) is concluded as the overall most precise method due to relative errors $\sim (\Delta x)^2$.  The two other schemes are determined unsuitable for some types of solution. In particular, the implicit backward Euler scheme is concluded unsuited for solution that with few time iterations (diffusion time $<\sim 0.1$ characteristic diffusion time), due relative errors one order of magnitude larger than the Crank-Nicolson method. The explicit forward Euler method is concluded as unsuited in the opposite case, where the solution is procured after a large number of iterations (diffusion time $>\sim 0.1$ characteristic diffusion time), and the number of spatial discretization points are large ($\sim 10^2$). \newline
+In the case of two spatial dimensions, this project finds that the explicit forward Euler produces solutions similar in shape and order of magnitude to the the closed form solution. In the two dimensional case, no further conclusions are drawn, due to results which indicate an uncharacteristic independence on $h$. 
+\paragraph{Tools used:} 
+In constructing the code, $C++$ with the armadillo library was used. More on this under \hyperref[M.AlgoImpl]{algorithm implementation}. Python, with the matplotlib and numpy library, was utilized in procuring plots and processing the data output from the solver. In addition, a number of books and websites were drawn upon to build the theoretical basis for the project described in the methods section. These are listed at the end of project.
 
-
-WHY scale the problem
-Application of this heat equation to a simple system of heat flow in a rod is the basis for this project, which aims examine finite sums numerical methods for linear diffusion problems with Dirichlet boundary conditions (BCs) - or more simply put, fixed boundary conditions. \newline
-
-What is finite difference method? How to make a such a solver that can be applied to a range of problems? - scaling!
-
- 
-1: look at the heat equation. What's what, when does it apply? \newline
-
-2: How to scale a heat equation problem? \newline
- 
-3. What is the problem we are looking at? A general case. Many problems may be expressed as this through the scaling methods described above.  \newline
- 
-4. Analytical solution -> With these system properties, it is fairly easily calculated. Other times, not necessarily so. That's why numerical solutions are desirable.  \newline
-
-5. Discretize problem from 3. \newline
- 
-
-For the purpose of approximating the derivatives of $u$, three methods are applied: explicit forward Euler, implicit Backward Euler, and the implicit Crank-Nicolson with a time-centered scheme.
+All programs, results and files used in this project may be found on the author's \href{https://github.com/johanere/CP5}{Github repository}
 
 
-
-The diffusion equation, which provides a connection between a diffusion rate and a concen time derivative temperature relation to curvature
-
-dy with non-uniform temperature, the thermal energy - or he
-
-
-Initial conditions, boundry conditions \newline
-The dimensionsless Heat Equation -> the heat equation
-1+1 d-> 1d
-assumes regular stuff about math
 
 
 \section{Methods}
@@ -259,9 +239,9 @@ Then, setting $T_*=L_*^2/D$ results in:
 \begin{align}
 \frac{\partial \hat{u}}{\partial \hat t}=\frac{\partial^2 \hat{u}}{\partial \hat{x}^2} \label{eq:1dscaled}
 \end{align}
-\eqref{eq:1dscaled} now holds the scaled heat equation problem. All that is left is to similarly scale the ICs and BCs pertaining to the particular problem at hand.\newline
+\eqref{eq:1dscaled} now holds the scaled heat equation problem. All that is left is to similarly scale the ICs and BCs pertaining to the particular problem at hand.
 
-The scaling procedures above is now applied to the case of the one dimensional rod problem from the section \hyperref[M.1DHQ]{on the heat equation} - in the future simply referred to as the rod problem. The characteristic length of the problem is taken to be the length of the rod, so $L_*=L$. With the restrictions posed on the rod, $u_0$ ($u_0<u_1$) is the lowest temperature that any part of the rod may have, therefore $u_0$ is defined as $u=0$. This makes the the difference in temperature of the two thermal bath a natural choice for characteristic temperature, that is; $U_*=\Delta u$. Lastly, characteristic time is set to $T_*=L_*^2/D=L^2 \frac{\kappa}{c \rho}$. Renaming $\hat{u}$ as $u$, $\hat{t}$ as $t$ , and so on, then yields the following scaled diffusion problem:
+\paragraph{Applying scaling:} The scaling procedures above are now applied to the case of the one dimensional rod problem from the section \hyperref[M.1DHQ]{on the heat equation} - in the future simply referred to as the rod problem. The characteristic length of the problem is taken to be the length of the rod, so $L_*=L$. With the restrictions posed on the rod, $u_0$ ($u_0<u_1$) is the lowest temperature that any part of the rod may have, therefore $u_0$ is defined as $u=0$. This makes the the difference in temperature of the two thermal bath a natural choice for characteristic temperature, that is; $U_*=\Delta u$. Lastly, characteristic time is set to $T_*=L_*^2/D=L^2 \frac{\kappa}{c \rho}$. Renaming $\hat{u}$ as $u$, $\hat{t}$ as $t$ , and so on, then yields the following scaled diffusion problem:
 
 \begin{align}
 PDE:&\quad \frac{\partial^2 u(x,t)}{\partial x^2}=\frac{\partial u(x,t)}{\partial t} \label{eq:scaled.rod}\\
@@ -274,10 +254,6 @@ BCs:& \quad u(0,t)=0, \quad t \geq 0 \quad u(1,t)=1, \quad t \geq 0 \label{eq:sc
 
 \subsection{Approximation methods}
 \label{M.ApproxMethods}
-\textbf{ 
-explicit: uses first order temporal, second order spatial. Solve directly for next step
-implicit: uses first order temporal, second order spatial. Solve for previous step, use gaussian elimination, and solve matrix product for $Av=v_{j-1}$ for $v$.}
-
 The approximation methods used in this project are the explicit forward Euler, the implicit Backward Euler, and the Crank-Nicolson scheme with a time-centered scheme. All of these three methods are FDMs, which means that they approximate derivatives  by using a sum of differences, where the terms in this case are obtained from Taylor series expansions of the function to be differentiated. The description of the methods in this project is restricted to the expressions involved in the scaled heat equation \eqref{eq:Approxim.heateq}, however application to other types of PDEs are readily available in literature such as the book by A. Tveito and R.Winther on PDEs in numerical computations \cite{compPDE}.
 \begin{align}
 PDE:& \quad \frac{\partial^2 u(x,t)}{\partial x^2}=\frac{\partial u(x,t)}{\partial t} \label{eq:Approxim.heateq}\\
@@ -285,9 +261,9 @@ ICs:& \quad u(x,0)=f(x), \quad 0< x < 1 \label{eq:Approxim.IC}\\
 BCs:& \quad u(0,t)=a, \quad t \geq 0, \quad u(1,t)=b, \quad t \geq 0  \label{eq:Approxim.BC}
 \end{align}
 
-In order to apply the notation pertaining to discrete variables when describing the methods, the discretization of relevant variables is now outlined, assuming that the problem has been properly scaled. The spacial domain, $x \in [0,1]$, is discretized over $n+1$ grid points, such that $x_i=i \Delta x$, $i=0,1,...,n+1$, where $\Delta x= \frac{1}{n+1}$. Similarly, $t=[0,1]$, is is expressed as $t_j=j \Delta t$, $j\geq 0$. The dizcrete approximation of the diffusing quantity, $u \in [0,1]$ is then defined as $u(x_i,t_j)=u_{i,j}$, and the discrete ICs $f(x_i)$ and BCs $u_{0,j}$ and $u_{n+1,j}$. \newline
+In order to apply the notation pertaining to discrete variables when describing the methods, the discretization of relevant variables is now outlined, assuming that the problem has been properly scaled. The spacial domain, $x \in [0,1]$, is discretized over $n+1$ grid points, such that $x_i=i \Delta x$, $i=0,1,...,n+1$, where $\Delta x= \frac{1}{n+1}$. Similarly, $t=[0,1]$, is is expressed as $t_j=j \Delta t$, $j\geq 0$. The dizcrete approximation of the diffusing quantity, $u \in [0,1]$ is then defined as $u(x_i,t_j)=u_{i,j}$, and the discrete ICs $f(x_i)$ and BCs $u_{0,j}$ and $u_{n+1,j}$. 
 
-\textbf{The explicit forward Euler} scheme uses a forward Taylor expansion of the first order for the time derivative. That is\citep[p. 305]{HJ15}:
+\paragraph{The explicit forward Euler} scheme uses a forward Taylor expansion of the first order for the time derivative. That is\citep[p. 305]{HJ15}:
 \begin{equation}
 u_{t} \approx \frac{u(x, t +\Delta t)- u(x,t)}{\Delta t} =\frac{u(x_i, t_{j+1})- u(x_i,t_j)}{\Delta t} =\frac{u_{i,j+1}- u_{i,j}}{\Delta t} \label{FWD1d.ut}
 \end{equation}
@@ -326,7 +302,7 @@ In which $\textbf{A}=  \begin{bmatrix}
               			\end{bmatrix}$ 
 \newline
               			
-\textbf{The implicit backward Euler} scheme is an alternative method to the explicit Forward scheme. Instead of using forward  approximation to $u_{t}$, this implicit scheme uses a first order backward approximation \citep[308]{HJ15}:
+\paragraph{The implicit backward Euler} scheme is an alternative method to the explicit Forward scheme. Instead of using forward  approximation to $u_{t}$, this implicit scheme uses a first order backward approximation \citep[308]{HJ15}:
 
 \begin{equation}
 u_{t} \approx \frac{u_{i,j}- u_{i,j-1}}{\Delta t} \label{BW.ut}
@@ -345,7 +321,7 @@ $\textbf{B}=  \begin{bmatrix}
                       
                            0&\dots    &  & 0  &-\alpha & 1+2\alpha \\
               			\end{bmatrix}$ 
-\newline
+
 
 This $n \times n$ matrix product may solved by for example LU decomposition, which takes $\sim O(n^3)$ floating point operations \citep[173]{HJ15}. However, since \textbf{B} is a sparse matrix (most elements are equal to zero), such rigorous methods are overly complicated. $B$ is a tridiagonal matrix, and as such, may be solved for $V_j$ through tridiagonal matrix methods, resulting in fewer floating point operations ($\sim O(n)$). Drawing on the methods described in project 1 \cite{P1}, the matrix equation $V_{j-1}=BV_j$, may be reduced to: \newline
 $\begin{bmatrix} \tilde{v}_{1,j-1} \\ \tilde{v}_{2,j-1}\\ \cdots \\ \cdots \\ \tilde{v}_{n,j-1}\end{bmatrix}=\tilde{V}_{j-1}=\tilde{B}V_j$, with
@@ -391,9 +367,9 @@ This matrix product yields the relation $v_{n,j} \tilde{d}_n=\tilde{v}_{n,j-1}$.
   \end{cases}
 \label{eq:v_i}
 \end{equation}
-Which is the starting point for the explicit backward Euler algorithm presented later. \newline
+Which is the starting point for the explicit backward Euler algorithm presented later. 
 
-\textbf{The Crank-Nicolson scheme} (CN) combines the explicit and implicit methods described above through  the paramter $\theta$. The $\theta$-rule leads to the equation \cite[p.310]{HJ15}: 
+\paragraph{The Crank-Nicolson scheme} (CN) combines the explicit and implicit methods described above through  the paramter $\theta$. The $\theta$-rule leads to the equation \cite[p.310]{HJ15}: 
 
 \begin{equation}
 \frac{\theta}{(\Delta x)^2}(u_{i-1,j}-2u_{i,j}+u_{i,j})+\frac{1-\theta}{\Delta x}(u_{i+1,j-1}-2u_{i,j-1}+u_{i-1,j-1})=\frac{1}{\Delta t}(u_{i,j}-u_{i,j-1})
