@@ -13,16 +13,20 @@ int main()
 {
   string filename;
 
-  string h_s="0.01";
+  string h_s="0.005";
   string T_s="0.2";
   double h=stof(h_s);
   double T=stof(T_s);
-  int factor=10;
-  int n=(1/h)-1.0;
 
+  int n=(1/h)-1.0;
+  int graph=0;
+  int factor=6.0;
 
   string fileout = "Data/";      // name of output file
-  fileout.append("Avr_relerr");
+  fileout.append("Avr_relerr_");
+  fileout.append(h_s);
+  fileout.append("_");
+  fileout.append(T_s);
   ofile.open(fileout);
   ofile << setiosflags(ios::showpoint | ios::uppercase);
 
@@ -83,6 +87,8 @@ int main()
   }
   ofile.close();
 
+  if (graph==1) {
+  cout<<"producing data for plotting"<<endl;
   fileout = "Data/";      // name of output file
   fileout.append("exact");
   ofile.open(fileout);
@@ -97,5 +103,6 @@ int main()
   ofile << setiosflags(ios::showpoint | ios::uppercase);
   ofile << setw(15) << setprecision(8) <<v<<endl;
   ofile.close();
+  }
 
 } //end of main

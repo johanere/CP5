@@ -20,7 +20,7 @@ ax.set_xlabel('x')
 ax.set_ylabel('y')
 ax.set_zlabel('u(x,t)')
  
-plt.show()
+plt.savefig("../../../Results/2dexact.pdf", bbox_inches='tight')
 
 A=np.loadtxt("numerical")
 n=np.size(A,0)
@@ -39,4 +39,4 @@ ax.set_xlabel('x')
 ax.set_ylabel('y')
 ax.set_zlabel('u(x,t)')
  
-plt.show()
+plt.savefig("../../../Results/2dnumerical.pdf", bbox_inches='tight')

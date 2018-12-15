@@ -614,7 +614,8 @@ Using the same train of thought applied in finding the 1D explicit forward Euler
 \item If $t<T$, repeat step 2.
 \item Else end simulation.  
 \end{enumerate}}}\end{center}
-Based on this algorithm, a separate program is developed - following the same pattern as the original. This program compares the solution from the algorithm implementation with the CFS, derived under \hyperref[M.CFS2D]{section on CFS to the 1D HQ}). The program implements the scaled 2D PDE \eqref{eq:2DPDE}, with homogeneous boundary conditions equal zero, and $f(x)=xy$. In order to study the stability of the numerical solution as a function of $\Delta t$,
+Based on this algorithm, a separate program is developed - following the same pattern as the original. This program compares the solution from the algorithm implementation with the CFS, derived under \hyperref[M.CFS2D]{section on CFS to the 1D HQ}). The program implements the scaled 2D PDE \eqref{eq:2DPDE}, with homogeneous boundary conditions equal zero, and $f(x)=xy$. In order to evaluate the algorithm integrity throughout the implementation, both the analytical solution and the numerical solution, using $h=0.01$, $\Delta t=\frac{1}{4} h^2$, and $T=0.2$, are plotted.\newline
+After having established algorithm integrity, the stability of the solution is examined through utilizing average relative error as an evaluating parameter. By varying $\Delta t=\gamma h^2$ through $\gamma=1, 1/2, 1/3, 1/4,1/5,1/6$, for $h=0.1$, $h=0.01$ and $h=0.005$.
 
 \subsection{Closed form solution to the 1D heat equation}
 \label{M.CFS1d}
@@ -810,6 +811,25 @@ BW Euler&$1.2 \cdot 10^{-1}$ & $9.4 \cdot 10^{-3}$ & $1.9 \cdot 10^{-3}$ & $1.3 
 Crank-Nicolson&$4.5 \cdot 10^{-2}$ & $1.3 \cdot 10^{-3}$ & $6.5 \cdot 10^{-4}$ & $8.5 \cdot 10^{-5}$\\  }
 \label{tab:AvrError1}
 \end{table}
+
+
+\begin{figure}[!htb]
+        \centering 
+         \includegraphics[scale=.7]{../Results/2dexact.pdf} 
+        \caption{Plot of CFS using $h=0.01$, $\Delta t=\frac{1}{4} h^2$, and $T=0.2$}
+        \label{fig:2dexact}   
+\end{figure}  
+
+\begin{figure}[!htb]
+        \centering 
+         \includegraphics[scale=.7]{../Results/2dnumerical.pdf} 
+        \caption{Plot of results from 2D explicit FW Euler using $h=0.01$, $\Delta t=\frac{1}{4} h^2$, and $T=0.2$}
+        \label{fig:2dnumerical}   
+\end{figure}  
+
+
+
+
 
 \bibliography{ref}
 \bibliographystyle{plain}
